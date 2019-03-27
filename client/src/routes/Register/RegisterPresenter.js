@@ -40,7 +40,7 @@ const Register = styled(Link)`
 	margin-top: 10px;
 `;
 
-const LoginPresenter = ({ username, password, err, handleChange, handleSubmit }) => {
+const RegisterPresenter = ({ username, password, passwordConfirm, err, handleChange, handleSubmit }) => {
 	return (
 		<Container>
 			<Box>
@@ -54,7 +54,7 @@ const LoginPresenter = ({ username, password, err, handleChange, handleSubmit })
 					}}
 					onSubmit={handleSubmit}
 				>
-					<Title>로그인</Title>
+					<Title>회원가입</Title>
 					<Form.Item
 						validateStatus={err.type === 'username' ? 'error' : ''}
 						help={err.type === 'username' ? err.msg : ''}
@@ -80,17 +80,30 @@ const LoginPresenter = ({ username, password, err, handleChange, handleSubmit })
 							onChange={handleChange}
 						/>
 					</Form.Item>
+					<Form.Item
+						validateStatus={err.type === 'password' ? 'error' : ''}
+						help={err.type === 'password' ? err.msg : ''}
+					>
+						<Input
+							prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+							type="password"
+							name="passwordConfirm"
+                            value={passwordConfirm}
+							placeholder="Password Confirm"
+							onChange={handleChange}
+						/>
+					</Form.Item>
 					<Form.Item>
 						<Button
 							type="primary"
 							htmlType="submit"
 							block
-							disabled={username === '' || password === '' ? true : false}
+							disabled={username === '' || password === '' || passwordConfirm === '' ? true : false}
 						>
-							Log in
+							회원가입
 						</Button>
 					</Form.Item>
-					<Register to="/register">회원가입</Register>
+					<Register to="/">로그인</Register>
 				</Form>
 			</Box>
 		</Container>
@@ -98,12 +111,13 @@ const LoginPresenter = ({ username, password, err, handleChange, handleSubmit })
 };
 
 // prop types check
-LoginPresenter.prototypes = {
+RegisterPresenter.prototypes = {
 	username: PropTypes.string.isRequired,
 	password: PropTypes.string.isRequired,
+	passwordConfirm: PropTypes.string.isRequired,
 	err: PropTypes.object.isRequired,
 	handleChange: PropTypes.func.isRequired,
 	handleSubmit: PropTypes.func.isRequired,
 };
 
-export default LoginPresenter;
+export default RegisterPresenter;

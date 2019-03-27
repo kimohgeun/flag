@@ -1,4 +1,4 @@
-import { LOGIN_SUCCESS, LOGIN_FAIL } from '../actions/userAction';
+import { LOGIN_SUCCESS, LOGIN_FAIL, REGISTER_SUCCESS, REGISTER_FAIL } from '../actions/userAction';
 
 // Initial State
 const initialState = {
@@ -11,6 +11,7 @@ const initialState = {
 export default function(state = initialState, action) {
 	switch (action.type) {
 		case LOGIN_SUCCESS:
+		case REGISTER_SUCCESS:
 			localStorage.setItem('flagToken', action.payload.token);
 			return {
 				...state,
@@ -19,6 +20,7 @@ export default function(state = initialState, action) {
 				err: null,
 			};
 		case LOGIN_FAIL:
+		case REGISTER_FAIL:
 			localStorage.removeItem('flagToken');
 			return {
 				...state,

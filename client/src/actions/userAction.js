@@ -31,3 +31,35 @@ export const login = (username, password) => dispatch => {
 			});
 		});
 };
+
+// 회원가입
+export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
+export const REGISTER_FAIL = 'REGISTER_FAIL';
+
+export const register = (username, password, passwordConfirm) => dispatch => {
+	// Headers
+	const config = {
+		headers: {
+			'Content-Type': 'application/json',
+		},
+	};
+	// Body
+	const body = JSON.stringify({ username, password, passwordConfirm });
+	// API 요청
+	axios
+		.post('/api/users/register', body, config)
+		// 회원가입 성공
+		.then(res =>
+			dispatch({
+				type: REGISTER_SUCCESS,
+				payload: res.data,
+			})
+		)
+		// 회원가입 실패
+		.catch(err => {
+			dispatch({
+				type: REGISTER_FAIL,
+				payload: err.response.data,
+			});
+		});
+};

@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import GlobalStyle from '../GlobalStyle';
 import 'antd/dist/antd.css';
-import Login from '../routes/Login';
+import Router from './Router'
+
+
 
 class App extends Component {
 	render() {
 		return (
-			<div>
+			<>
 				<GlobalStyle />
-				<Login />
-			</div>
+				<Router/>
+			</>
 		);
 	}
 }
