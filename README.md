@@ -4,7 +4,10 @@
 
 ## BACK-END
 
-* Framework : Express
+-   Framework : Express
 
-* Database : mongoDB
+-   Database : mongoDB
 
+## FRONT-END
+
+-   Library : React

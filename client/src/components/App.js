@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import GlobalStyle from '../GlobalStyle';
+import 'antd/dist/antd.css';
+import Login from '../routes/Login';
 
 class App extends Component {
 	render() {
 		return (
 			<div>
 				<GlobalStyle />
-				<h1>FLAG</h1>
+				<Login />
 			</div>
 		);
 	}
