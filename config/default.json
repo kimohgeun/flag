@@ -1,3 +1,4 @@
 {
-    "mongoURI" : "mongodb://ohgeun:qwe123@ds125616.mlab.com:25616/flag"
+	"mongoURI": "mongodb://ohgeun:qwe123@ds125616.mlab.com:25616/flag",
+	"jwtSecret": "flag_jwtSecret"
 }

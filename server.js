@@ -4,6 +4,9 @@ const config = require('config');
 
 const app = express();
 
+// body parser
+app.use(express.json());
+
 // DB 연결
 const db = config.get('mongoURI');
 mongoose
@@ -13,6 +16,9 @@ mongoose
 	})
 	.then(() => console.log('MongoDB Connected'))
 	.catch(err => console.log(err));
+
+// 라우터
+app.use('/api/users', require('./routes/api/users'));
 
 // 서버 생성
 const port = process.env.PORT || 5000;
