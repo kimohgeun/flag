@@ -9,7 +9,7 @@ const Router = ({ loading, isAuthenticated }) => (
 		<>
 			{!loading && (
 				<>
-					{isAuthenticated ? (
+					{!isAuthenticated ? (
 						<Switch>
 							<Route path="/" exact component={Home} />
 							<Redirect from="*" to="/" />
