@@ -37,11 +37,18 @@ class LoginContainer extends Component {
 						msg: err,
 					},
 				});
-			} else {
+			} else if (err === '비밀번호가 일치하지 않습니다.') {
 				this.setState({
 					err: {
 						type: 'password',
 						msg: err,
+					},
+				});
+			} else {
+				this.setState({
+					err: {
+						type: '',
+						msg: '',
 					},
 				});
 			}

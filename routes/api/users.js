@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const auth = require('../../middleware/auth');
 const User = require('../../models/User');
-const fs = require('fs')
+const fs = require('fs');
 
 const router = express.Router();
 
@@ -27,6 +27,7 @@ router.post('/register', (req, res) => {
 				});
 				// 비밀번호 암호화
 				bcrypt.genSalt(10, (err, salt) => {
+					if (err) throw err;
 					bcrypt.hash(newUser.password, salt, (err, hash) => {
 						if (err) throw err;
 						newUser.password = hash;
@@ -79,7 +80,7 @@ router.post('/login', (req, res) => {
 	});
 });
 
-// 유저정보 가져오기
+// 유저정보 불러오기
 router.get('/user', auth, (req, res) => {
 	User.findById(req.user.id)
 		.select('-password')

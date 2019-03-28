@@ -1,11 +1,20 @@
-import { LOGIN_SUCCESS, LOGIN_FAIL, REGISTER_SUCCESS, REGISTER_FAIL } from '../actions/userAction';
+import {
+	LOGIN_SUCCESS,
+	LOGIN_FAIL,
+	LOGOUT,
+	REGISTER_SUCCESS,
+	REGISTER_FAIL,
+	LOAD_SUCCESS,
+	LOAD_FAIL,
+} from '../actions/userAction';
 
 // Initial State
 const initialState = {
-	token: localStorage.getItem('token'),
+	token: localStorage.getItem('flagToken'),
 	user: null,
 	isAuthenticated: false,
 	err: null,
+	loading: true,
 };
 
 export default function(state = initialState, action) {
@@ -21,6 +30,7 @@ export default function(state = initialState, action) {
 			};
 		case LOGIN_FAIL:
 		case REGISTER_FAIL:
+		case LOAD_FAIL:
 			localStorage.removeItem('flagToken');
 			return {
 				...state,
@@ -28,7 +38,25 @@ export default function(state = initialState, action) {
 				user: null,
 				isAuthenticated: false,
 				err: action.payload.msg,
+				loading: false,
 			};
+		case LOAD_SUCCESS:
+			return {
+				...state,
+				isAuthenticated: true,
+				isLoading: false,
+				user: action.payload,
+				loading: false,
+			};
+		case LOGOUT:
+			localStorage.removeItem('flagToken');
+		return {
+			token: null,
+			user: null,
+			isAuthenticated: false,
+			err: null,
+			loading: false,
+		}
 		default:
 			return state;
 	}

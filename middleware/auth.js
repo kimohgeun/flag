@@ -11,7 +11,7 @@ auth = (req, res, next) => {
 		req.user = decoded;
 		next();
 	} catch (error) {
-		res.status(400).json({ msg: '토큰이 유효하지 않습니다.' });
+		res.status(400).json({ msg: '토큰이 만료되었습니다.' });
 	}
 };
 
