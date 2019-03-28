@@ -54,7 +54,7 @@ const FileInputLabel = styled.label`
 const LabelSpan = styled.span`
 	font-weight: bold;
 	color: #3d91f7;
-	margin-top:10px;
+	margin-top: 10px;
 	visibility: ${props => (props.disabled ? 'hidden' : 'visible')};
 `;
 
@@ -92,18 +92,18 @@ const HomePresenter = ({ username, disabled, flag, onChange, displayName, logout
 			</TopBox>
 		</Top>
 		<Container>
-			<UploadForm>
+			<UploadForm action="/api/files/upload" method="post" encType="multipart/form-data">
 				<div>
 					<FileInputLabel for="file_input">
 						<Icon style={{ fontSize: '5rem', color: '#3d91f7' }} type="cloud-upload" />
 						<LabelSpan disabled={disabled}>파일선택을 선택해 주세요.</LabelSpan>
 					</FileInputLabel>
-					<FileInput id="file_input" type="file" onChange={displayName} />
+					<FileInput id="file_input" type="file" onChange={displayName} name="userfile" />
 					<FileName id="file_name" type="text" readOnly />
 				</div>
 				<Address>
 					{`http://localhost:3000/${username}/`}
-					<Flag placeholder="플래그명을 작성해 주세요." vlaue={flag} onChange={onChange} />
+					<Flag placeholder="플래그명을 작성해 주세요." name="flagname" vlaue={flag} onChange={onChange} />
 				</Address>
 				<Button type="primary" htmlType="submit" disabled={!disabled || flag === ''}>
 					업로드

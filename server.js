@@ -1,11 +1,15 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const config = require('config');
+const fileUpload = require('express-fileupload');
 
 const app = express();
 
 // body parser
 app.use(express.json());
+
+// express fileupload
+app.use(fileUpload());
 
 // DB 연결
 const db = config.get('mongoURI');
@@ -19,6 +23,7 @@ mongoose
 
 // 라우터
 app.use('/api/users', require('./routes/api/users'));
+app.use('/api/files', require('./routes/api/files'));
 
 // 서버 생성
 const port = process.env.PORT || 5000;
