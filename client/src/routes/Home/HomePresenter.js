@@ -83,7 +83,7 @@ const Flag = styled.input`
 	color: #2ecc71;
 `;
 
-const HomePresenter = ({ username, disabled, flag, onChange, displayName, logout }) => (
+const HomePresenter = ({ username, disabled, flag, loading, onSubmit, msg, onChange, displayName, logout }) => (
 	<>
 		<Top>
 			<TopBox>
@@ -92,18 +92,22 @@ const HomePresenter = ({ username, disabled, flag, onChange, displayName, logout
 			</TopBox>
 		</Top>
 		<Container>
-			<UploadForm action="/api/files/upload" method="post" encType="multipart/form-data">
+			<UploadForm onSubmit={onSubmit} encType="multipart/form-data">
 				<div>
-					<FileInputLabel for="file_input">
-						<Icon style={{ fontSize: '5rem', color: '#3d91f7' }} type="cloud-upload" />
+					<FileInputLabel htmlFor="file_input">
+						{loading ? (
+							<Icon style={{ fontSize: '5rem', color: '#3d91f7' }} type="loading" />
+						) : (
+							<Icon style={{ fontSize: '5rem', color: '#3d91f7' }} type="cloud-upload" />
+						)}
 						<LabelSpan disabled={disabled}>파일선택을 선택해 주세요.</LabelSpan>
 					</FileInputLabel>
 					<FileInput id="file_input" type="file" onChange={displayName} name="userfile" />
 					<FileName id="file_name" type="text" readOnly />
 				</div>
-				<Address>
+				<Address Err={msg === '이미 사용된 플래그명 입니다.'}>
 					{`http://localhost:3000/${username}/`}
-					<Flag placeholder="플래그명을 작성해 주세요." name="flagname" vlaue={flag} onChange={onChange} />
+					<Flag placeholder="플래그명을 작성해 주세요." name="flagname" value={flag} onChange={onChange} />
 				</Address>
 				<Button type="primary" htmlType="submit" disabled={!disabled || flag === ''}>
 					업로드

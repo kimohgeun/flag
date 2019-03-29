@@ -27,12 +27,12 @@ router.post('/upload', (req, res) => {
 				});
 				// 파일 업로드
 				userfile.mv(`files/${username}/` + userfile.name, err => {
-					if (err) return res.json('업로드 실패');
-					newFile.save().then(() => res.json('업로드 성공'));
+					if (err) return res.json({ msg: '업로드 실패' });
+					newFile.save().then(() => res.json({ msg: '업로드 성공' }));
 				});
 			});
 		} else {
-            // 처음 업로드
+			// 처음 업로드
 			const newFile = new File({
 				uploader: username,
 				filename: req.files.userfile.name,
@@ -41,8 +41,8 @@ router.post('/upload', (req, res) => {
 			});
 			// 파일 업로드
 			userfile.mv(`files/${username}/` + userfile.name, err => {
-				if (err) return res.json('업로드 실패');
-				newFile.save().then(() => res.json('업로드 성공'));
+				if (err) return res.json({ msg: '업로드 실패' });
+				newFile.save().then(() => res.json({ msg: '업로드 성공' }));
 			});
 		}
 	});
