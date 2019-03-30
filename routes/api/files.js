@@ -21,8 +21,8 @@ router.post('/upload', (req, res) => {
 					});
 				const newFile = new File({
 					uploader: username,
-					filename: req.files.userfile.name,
-					path: `/files/${username}/${flagname}`,
+					filename: userfile.name,
+					path: `files/${username}/${userfile.name}`,
 					flag: flagname,
 				});
 				// 파일 업로드
@@ -35,8 +35,8 @@ router.post('/upload', (req, res) => {
 			// 처음 업로드
 			const newFile = new File({
 				uploader: username,
-				filename: req.files.userfile.name,
-				path: `/files/${username}/${flagname}`,
+				filename: userfile.name,
+				path: `files/${username}/${userfile.name}`,
 				flag: flagname,
 			});
 			// 파일 업로드
@@ -46,6 +46,19 @@ router.post('/upload', (req, res) => {
 			});
 		}
 	});
+});
+
+// 다운로드
+router.get('/download/:username/:flagname', (req, res) => {
+	const { username, flagname } = req.params;
+	// 파일 찾기
+	File.findOne({ uploader: username })
+		.findOne({ flag: flagname })
+		.then(file => res.data(file.path))
+		.catch(() => {
+			console.log(1123);
+			res.json({ msg: '유저네임 혹은 플래그명을 확인해 주세요.' });
+		});
 });
 
 module.exports = router;
