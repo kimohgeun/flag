@@ -22,7 +22,7 @@ const TopBox = styled.div`
 	align-items: center;
 	justify-content: space-between;
 `;
-const Logo = styled.span`
+const Title = styled.span`
 	color: #fff;
 	font-weight: bold;
 	font-size: 1.2rem;
@@ -83,7 +83,7 @@ const HomePresenter = ({ flag, file, loading, username, logout, onChange, onSubm
 	<>
 		<Top>
 			<TopBox>
-				<Logo>FLAG</Logo>
+				<Title>FLAG</Title>
 				<Logout onClick={() => logout()}>로그아웃</Logout>
 			</TopBox>
 		</Top>

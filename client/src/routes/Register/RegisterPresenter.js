@@ -21,18 +21,27 @@ const Box = styled.div`
 	align-items: center;
 `;
 
-const Logo = styled.h1`
+const Title = styled.span`
 	color: #fff;
 	font-weight: bold;
 	font-size: 30px;
 	letter-spacing: 5px;
-	padding: 30px;
 `;
 
-const Title = styled.h2`
+const SubTitle = styled.span`
+	color: #fff;
+	font-size: 1.3rem;
+	font-weight: 200;
+	margin-bottom: 50px;
+`;
+
+const Text = styled.span`
+	display: block;
 	text-align: center;
 	font-size: 1.5rem;
 	color: #3d91f7;
+	font-weight: bold;
+	margin-bottom: 20px;
 `;
 
 const Register = styled(Link)`
@@ -44,7 +53,8 @@ const RegisterPresenter = ({ username, password, passwordConfirm, handleChange, 
 	return (
 		<Container>
 			<Box>
-				<Logo>FLAG</Logo>
+				<Title>FLAG</Title>
+				<SubTitle>File sharing using simple URL</SubTitle>
 				<Form
 					style={{
 						width: '350px',
@@ -54,8 +64,11 @@ const RegisterPresenter = ({ username, password, passwordConfirm, handleChange, 
 					}}
 					onSubmit={handleSubmit}
 				>
-					<Title>회원가입</Title>
-					<Form.Item validateStatus={err === 400 ? 'error' : ''} help={err === 400 && "이미 가입된 계정입니다."}>
+					<Text>회원가입</Text>
+					<Form.Item
+						validateStatus={err === 400 ? 'error' : ''}
+						help={err === 400 && '이미 가입된 계정입니다.'}
+					>
 						<Input
 							prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
 							name="username"

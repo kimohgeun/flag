@@ -9,13 +9,12 @@ import Register from '../routes/Register';
 
 const Router = ({ loading, isAuthenticated }) => (
 	<BrowserRouter>
-		<Route path="/:username/:flagname" exact component={Download} />
 		{!loading && (
 			<>
-				{' '}
 				{isAuthenticated ? (
 					<Switch>
 						<Route path="/" exact component={Home} />
+						<Route path="/:username/:flagname" component={Download} />
 						<Redirect from="*" to="/" />
 					</Switch>
 				) : (
@@ -23,6 +22,7 @@ const Router = ({ loading, isAuthenticated }) => (
 						<Route path="/" exact component={Login} />
 						<Route path="/login" component={Login} />
 						<Route path="/register" component={Register} />
+						<Route path="/:username/:flagname" component={Download} />
 						<Redirect from="*" to="/" />
 					</Switch>
 				)}

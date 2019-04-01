@@ -25,6 +25,10 @@
 -   400 : 플래그 중복
 -   401 : 업로드 실패
 
+**DOWNLOAD_FAIL**
+
+-   400 : 유저네임 혹은 플래그 불일치
+
 ## FRONT-END
 
 -   Library : React

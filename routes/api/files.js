@@ -2,6 +2,7 @@ const express = require('express');
 const config = require('config');
 const auth = require('../../middleware/auth');
 const File = require('../../models/File');
+const fs = require('fs');
 
 const router = express.Router();
 
@@ -29,22 +30,24 @@ router.post('/upload', (req, res) => {
 				newFile.save().then(() => res.json({ uploaded: true }));
 			});
 		} else {
-			File.find({ files: { $elemMatch: { flag: flagname } } }).then(file => {
-				if (file.length === 1) return res.json({ err: 400 });
-				const addFile = {
-					uploader: username,
-					filename: userfile.name,
-					path: `files/${username}/${userfile.name}`,
-					flag: flagname,
-				};
-				// 파일 업로드
-				userfile.mv(`files/${username}/` + userfile.name, err => {
-					if (err) return res.json({ err: 401 });
-					File.update({ uploader: username }, { $push: { files: addFile } }).then(() =>
-						res.json({ uploaded: true })
-					);
-				});
-			});
+			File.findOne({ $and: [{ uploader: username }, { files: { $elemMatch: { flag: flagname } } }] }).then(
+				file => {
+					if (file !== null) return res.json({ err: 400 });
+					const addFile = {
+						uploader: username,
+						filename: userfile.name,
+						path: `files/${username}/${userfile.name}`,
+						flag: flagname,
+					};
+					// 파일 업로드
+					userfile.mv(`files/${username}/` + userfile.name, err => {
+						if (err) return res.json({ err: 401 });
+						File.update({ uploader: username }, { $push: { files: addFile } }).then(() =>
+							res.json({ uploaded: true })
+						);
+					});
+				}
+			);
 		}
 	});
 });
@@ -53,12 +56,28 @@ router.post('/upload', (req, res) => {
 router.get('/download/:username/:flagname', (req, res) => {
 	const { username, flagname } = req.params;
 	// 파일 찾기
-	File.findOne({ uploader: username })
-		.findOne({ flag: flagname })
-		.then(file => res.data(file.path))
-		.catch(() => {
-			res.json({ msg: '유저네임 혹은 플래그명을 확인해 주세요.' });
+	File.findOne({ $and: [{ uploader: username }, { files: { $elemMatch: { flag: flagname } } }] }).then(file => {
+		const findFile = file.files.filter(file => {
+			return file.flag === flagname;
 		});
+		const filePath = findFile[0].path;
+		res.download(filePath);
+	});
+});
+
+// 파일이름 찾기
+router.get('/filename/:username/:flagname', (req, res) => {
+	const { username, flagname } = req.params;
+	// 파일 찾기
+	File.findOne({ $and: [{ uploader: username }, { files: { $elemMatch: { flag: flagname } } }] }).then(file => {
+		// 유저네임 혹은 플래그 불일치
+		if (file === null) return res.json({ err: 400 });
+		const findFile = file.files.filter(file => {
+			return file.flag === flagname;
+		});
+		const fileName = findFile[0].filename;
+		res.json({ filename: fileName });
+	});
 });
 
 module.exports = router;
