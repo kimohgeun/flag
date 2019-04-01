@@ -8,6 +8,23 @@
 
 -   Database : mongoDB
 
+### ❗️Err Status
+
+**REGISTER_FAIL**
+
+-   400 :   중복가입
+
+**LOGIN_FAIL & AUTH_FAIL**
+
+-   400 : 계정없음
+-   401 : 패스워드 불일치
+-   402 : 토큰만료
+
+**UPLOAD_FAIL**
+
+-   400 : 플래그 중복
+-   401 : 업로드 실패
+
 ## FRONT-END
 
 -   Library : React

@@ -2,16 +2,13 @@ import React, { Component } from 'react';
 import RegisterPresenter from './RegisterPresenter';
 import { connect } from 'react-redux';
 import { register } from '../../actions/userAction';
+import { clearError } from '../../actions/errorAction';
 
 class RegisterContainer extends Component {
 	state = {
 		username: '',
 		password: '',
 		passwordConfirm: '',
-		err: {
-			type: '',
-			msg: '',
-		},
 	};
 
 	handleChange = e => {
@@ -22,66 +19,32 @@ class RegisterContainer extends Component {
 
 	handleSubmit = e => {
 		e.preventDefault();
-		const { username, password, passwordConfirm } = this.state;
-		const { register } = this.props;
-		register(username, password, passwordConfirm);
+		const { username, password } = this.state;
+		const { register, clearError } = this.props;
+		register(username, password);
+		clearError();
 	};
 
-	componentDidUpdate(prevProps) {
-		const { err, isAuthenticated } = this.props;
-		// 에러 체크
-		if (err !== prevProps.err) {
-			if (err === '계정이 이미 존재합니다.') {
-				this.setState({
-					err: {
-						type: 'username',
-						msg: err,
-					},
-				});
-			} else {
-				this.setState({
-					err: {
-						type: 'password',
-						msg: err,
-					},
-				});
-			}
-		}
-
-		if (isAuthenticated !== prevProps.isAuthenticated) {
-			this.setState({
-				username: '',
-				password: '',
-				passwordConfirm: '',
-				err: {
-					type: '',
-					msg: '',
-				},
-			});
-		}
-	}
-
 	render() {
-		const { username, password, passwordConfirm, err } = this.state;
+		const { username, password, passwordConfirm } = this.state;
 		return (
 			<RegisterPresenter
 				username={username}
 				password={password}
 				passwordConfirm={passwordConfirm}
-				err={err}
 				handleChange={this.handleChange}
 				handleSubmit={this.handleSubmit}
+				err={this.props.err}
 			/>
 		);
 	}
 }
 
 const mapStateToProps = state => ({
-	err: state.userReducer.err,
-	isAuthenticated: state.userReducer.isAuthenticated,
+	err: state.errorReducer.err,
 });
 
 export default connect(
 	mapStateToProps,
-	{ register }
+	{ register, clearError }
 )(RegisterContainer);

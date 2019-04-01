@@ -40,7 +40,7 @@ const Register = styled(Link)`
 	margin-top: 10px;
 `;
 
-const RegisterPresenter = ({ username, password, passwordConfirm, err, handleChange, handleSubmit }) => {
+const RegisterPresenter = ({ username, password, passwordConfirm, handleChange, handleSubmit, err }) => {
 	return (
 		<Container>
 			<Box>
@@ -55,10 +55,7 @@ const RegisterPresenter = ({ username, password, passwordConfirm, err, handleCha
 					onSubmit={handleSubmit}
 				>
 					<Title>회원가입</Title>
-					<Form.Item
-						validateStatus={err.type === 'username' ? 'error' : ''}
-						help={err.type === 'username' ? err.msg : ''}
-					>
+					<Form.Item validateStatus={err === 400 ? 'error' : ''} help={err === 400 && "이미 가입된 계정입니다."}>
 						<Input
 							prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
 							name="username"
@@ -67,10 +64,7 @@ const RegisterPresenter = ({ username, password, passwordConfirm, err, handleCha
 							onChange={handleChange}
 						/>
 					</Form.Item>
-					<Form.Item
-						validateStatus={err.type === 'password' ? 'error' : ''}
-						help={err.type === 'password' ? err.msg : ''}
-					>
+					<Form.Item>
 						<Input
 							prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
 							type="password"
@@ -80,15 +74,12 @@ const RegisterPresenter = ({ username, password, passwordConfirm, err, handleCha
 							onChange={handleChange}
 						/>
 					</Form.Item>
-					<Form.Item
-						validateStatus={err.type === 'password' ? 'error' : ''}
-						help={err.type === 'password' ? err.msg : ''}
-					>
+					<Form.Item>
 						<Input
 							prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
 							type="password"
 							name="passwordConfirm"
-                            value={passwordConfirm}
+							value={passwordConfirm}
 							placeholder="Password Confirm"
 							onChange={handleChange}
 						/>
@@ -115,9 +106,9 @@ RegisterPresenter.prototypes = {
 	username: PropTypes.string.isRequired,
 	password: PropTypes.string.isRequired,
 	passwordConfirm: PropTypes.string.isRequired,
-	err: PropTypes.object.isRequired,
 	handleChange: PropTypes.func.isRequired,
 	handleSubmit: PropTypes.func.isRequired,
+	err: PropTypes.number,
 };
 
 export default RegisterPresenter;

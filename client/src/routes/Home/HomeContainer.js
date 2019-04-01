@@ -2,21 +2,20 @@ import React, { Component } from 'react';
 import HomePresenter from './HomePresenter';
 import { connect } from 'react-redux';
 import { logout } from '../../actions/userAction';
-import { upload } from '../../actions/fileAction';
+import { upload, clearUploaded } from '../../actions/fileAction';
+import { clearError } from '../../actions/errorAction';
 import { message } from 'antd';
 
 class HomeContainer extends Component {
 	state = {
-		disabled: false,
-		file: null,
 		flag: '',
+		file: null,
 		loading: false,
 	};
 
-	displayName = e => {
+	displayFileName = e => {
 		document.querySelector('#file_name').value = document.querySelector('#file_input').value;
 		this.setState({
-			disabled: true,
 			file: e.target.files[0],
 		});
 	};
@@ -45,57 +44,61 @@ class HomeContainer extends Component {
 		upload(formData);
 	};
 
-	error = () => {
-		const { msg } = this.props;
-		message.error(msg);
-	};
-
-	success = () => {
-		const { msg } = this.props;
-		message.success(msg);
-	};
-
 	componentDidUpdate(prevProps) {
-		const { msg } = this.props;
-
-		if (msg !== prevProps.msg) {
-			if (msg === '이미 사용된 플래그명 입니다.') {
-				this.error();
+		const { uploaded, clearUploaded, err, clearError } = this.props;
+		if (uploaded !== prevProps.uploaded) {
+			if (uploaded) {
+				const success = () => {
+					message.success('업로드를 완료하였습니다.');
+				};
+				success();
 				this.setState({
-					loading: false,
-				});
-			} else if (msg === '업로드 실패') {
-				this.error();
-				this.setState({
-					loading: false,
-				});
-			} else {
-				this.success();
-				this.setState({
-					disabled: false,
-					file: null,
 					flag: '',
+					file: null,
 					loading: false,
 				});
-				document.querySelector('#file_name').value = null
+				document.querySelector('#file_name').value = null;
+				document.querySelector('#file_input').value = null;
+				clearUploaded();
+			}
+		}
+		if (err !== prevProps.err) {
+			if (err === 400) {
+				const error = () => {
+					message.error('이미 사용된 플래그입니다.');
+				};
+				this.setState({
+					loading: false,
+				});
+				error();
+				clearError();
+			} else if (err === 401) {
+				const error = () => {
+					message.error('업로드를 실패하였습니다.');
+				};
+				this.setState({
+					loading: false,
+				});
+				error();
+				clearError();
 			}
 		}
 	}
 
 	render() {
-		const { disabled, flag, loading } = this.state;
-		const { logout, username } = this.props;
-		
+		const { flag, file, loading } = this.state;
+		const { username, logout } = this.props;
+
 		return (
 			<HomePresenter
-				disabled={disabled}
-				username={username}
 				flag={flag}
-				logout={logout}
+				file={file}
 				loading={loading}
+				username={username}
+				logout={logout}
 				onChange={this.onChange}
 				onSubmit={this.onSubmit}
-				displayName={this.displayName}
+				displayFileName={this.displayFileName}
 			/>
 		);
 	}
@@ -103,10 +106,11 @@ class HomeContainer extends Component {
 
 const mapStateToProps = state => ({
 	username: state.userReducer.user.username,
-	msg: state.fileReducer.msg,
+	uploaded: state.fileReducer.uploaded,
+	err: state.errorReducer.err,
 });
 
 export default connect(
 	mapStateToProps,
-	{ logout, upload }
+	{ logout, upload, clearUploaded, clearError }
 )(HomeContainer);

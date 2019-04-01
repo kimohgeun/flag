@@ -10,39 +10,40 @@ router.post('/upload', (req, res) => {
 	const { username, flagname } = req.body;
 	const { userfile } = req.files;
 	File.findOne({ uploader: username }).then(uploader => {
-		if (uploader) {
-			// 플래그 중복확인
-			File.findOne({
-				flag: flagname,
-			}).then(flag => {
-				if (flag)
-					return res.status(400).json({
-						msg: '이미 사용된 플래그명 입니다.',
-					});
-				const newFile = new File({
+		if (!uploader) {
+			// 처음 업로드
+			const newFile = new File({
+				uploader: username,
+				files: [
+					{
+						uploader: username,
+						filename: userfile.name,
+						path: `files/${username}/${userfile.name}`,
+						flag: flagname,
+					},
+				],
+			});
+			// 파일 업로드
+			userfile.mv(`files/${username}/` + userfile.name, err => {
+				if (err) return res.json({ err: 401 });
+				newFile.save().then(() => res.json({ uploaded: true }));
+			});
+		} else {
+			File.find({ files: { $elemMatch: { flag: flagname } } }).then(file => {
+				if (file.length === 1) return res.json({ err: 400 });
+				const addFile = {
 					uploader: username,
 					filename: userfile.name,
 					path: `files/${username}/${userfile.name}`,
 					flag: flagname,
-				});
+				};
 				// 파일 업로드
 				userfile.mv(`files/${username}/` + userfile.name, err => {
-					if (err) return res.json({ msg: '업로드 실패' });
-					newFile.save().then(() => res.json({ msg: '업로드 성공' }));
+					if (err) return res.json({ err: 401 });
+					File.update({ uploader: username }, { $push: { files: addFile } }).then(() =>
+						res.json({ uploaded: true })
+					);
 				});
-			});
-		} else {
-			// 처음 업로드
-			const newFile = new File({
-				uploader: username,
-				filename: userfile.name,
-				path: `files/${username}/${userfile.name}`,
-				flag: flagname,
-			});
-			// 파일 업로드
-			userfile.mv(`files/${username}/` + userfile.name, err => {
-				if (err) return res.json({ msg: '업로드 실패' });
-				newFile.save().then(() => res.json({ msg: '업로드 성공' }));
 			});
 		}
 	});
@@ -56,7 +57,6 @@ router.get('/download/:username/:flagname', (req, res) => {
 		.findOne({ flag: flagname })
 		.then(file => res.data(file.path))
 		.catch(() => {
-			console.log(1123);
 			res.json({ msg: '유저네임 혹은 플래그명을 확인해 주세요.' });
 		});
 });

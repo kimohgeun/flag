@@ -44,18 +44,13 @@ const UploadForm = styled.form`
 `;
 
 const FileInputLabel = styled.label`
-	width: 100%;
-	cursor: pointer;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-`;
-
-const LabelSpan = styled.span`
-	font-weight: bold;
+	justify-content: center;
+	cursor: pointer;
+	margin-bottom: 10px;
 	color: #3d91f7;
-	margin-top: 10px;
-	visibility: ${props => (props.disabled ? 'hidden' : 'visible')};
 `;
 
 const FileInput = styled.input`
@@ -64,26 +59,27 @@ const FileInput = styled.input`
 
 const FileName = styled.input`
 	all: unset;
-	width: 500px;
+	width: 100%;
 	text-align: center;
+	font-size: 1rem;
 	color: #2ecc71;
-	margin-bottom: 10px;
 `;
 
-const Address = styled.div`
+const DownAddress = styled.div`
 	border: 2px solid #3d91f7;
 	color: #3d91f7;
 	padding: 10px;
 	border-radius: 10px;
-	margin-bottom: 20px;
+	margin: 15px 0;
 `;
 
 const Flag = styled.input`
 	all: unset;
 	color: #2ecc71;
+	font-weight: 500;
 `;
 
-const HomePresenter = ({ username, disabled, flag, loading, onSubmit, msg, onChange, displayName, logout }) => (
+const HomePresenter = ({ flag, file, loading, username, logout, onChange, onSubmit, displayFileName }) => (
 	<>
 		<Top>
 			<TopBox>
@@ -93,23 +89,26 @@ const HomePresenter = ({ username, disabled, flag, loading, onSubmit, msg, onCha
 		</Top>
 		<Container>
 			<UploadForm onSubmit={onSubmit} encType="multipart/form-data">
-				<div>
-					<FileInputLabel htmlFor="file_input">
-						{loading ? (
-							<Icon style={{ fontSize: '5rem', color: '#3d91f7' }} type="loading" />
-						) : (
-							<Icon style={{ fontSize: '5rem', color: '#3d91f7' }} type="cloud-upload" />
-						)}
-						<LabelSpan disabled={disabled}>파일선택을 선택해 주세요.</LabelSpan>
-					</FileInputLabel>
-					<FileInput id="file_input" type="file" onChange={displayName} name="userfile" />
-					<FileName id="file_name" type="text" readOnly />
-				</div>
-				<Address Err={msg === '이미 사용된 플래그명 입니다.'}>
+				<FileInputLabel htmlFor="file_input">
+					{loading ? (
+						<>
+							<Icon type="loading" style={{ fontSize: '5rem', padding: '5px' }} />
+							<span style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>업로딩...</span>
+						</>
+					) : (
+						<>
+							<Icon type="file" style={{ fontSize: '5rem', padding: '5px' }} />
+							<span style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>파일선택</span>
+						</>
+					)}
+				</FileInputLabel>
+				<FileName id="file_name" readOnly />
+				<FileInput id="file_input" type="file" name="userfile" onChange={displayFileName} />
+				<DownAddress>
 					{`http://localhost:3000/${username}/`}
 					<Flag placeholder="플래그명을 작성해 주세요." name="flagname" value={flag} onChange={onChange} />
-				</Address>
-				<Button type="primary" htmlType="submit" disabled={!disabled || flag === ''}>
+				</DownAddress>
+				<Button type="primary" htmlType="submit" disabled={flag === '' || file === null}>
 					업로드
 				</Button>
 			</UploadForm>

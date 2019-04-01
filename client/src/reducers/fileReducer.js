@@ -1,9 +1,9 @@
-import { UPLOAD_SUCCESS, UPLOAD_FAIL } from '../actions/fileAction';
+import { UPLOAD_SUCCESS, UPLOAD_FAIL, CEAR_UPLOADED } from '../actions/fileAction';
 
 // Initial State
 const initialState = {
-	files: null,
-	msg: null,
+	fileList: [],
+	uploaded: false,
 };
 
 export default function(state = initialState, action) {
@@ -13,10 +13,14 @@ export default function(state = initialState, action) {
 				...state,
 				...action.payload,
 			};
+		case CEAR_UPLOADED:
+			return {
+				...state,
+				uploaded: false,
+			};
 		case UPLOAD_FAIL:
 			return {
 				...state,
-				...action.payload,
 			};
 		default:
 			return state;

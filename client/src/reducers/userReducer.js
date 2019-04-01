@@ -5,7 +5,7 @@ import {
 	REGISTER_SUCCESS,
 	REGISTER_FAIL,
 	LOAD_SUCCESS,
-	LOAD_FAIL,
+	AUTH_FAIL,
 } from '../actions/userAction';
 
 // Initial State
@@ -13,7 +13,6 @@ const initialState = {
 	token: localStorage.getItem('flagToken'),
 	user: null,
 	isAuthenticated: false,
-	err: null,
 	loading: true,
 };
 
@@ -26,37 +25,33 @@ export default function(state = initialState, action) {
 				...state,
 				...action.payload,
 				isAuthenticated: true,
-				err: null,
 			};
 		case LOGIN_FAIL:
 		case REGISTER_FAIL:
-		case LOAD_FAIL:
+		case AUTH_FAIL:
 			localStorage.removeItem('flagToken');
 			return {
 				...state,
 				token: null,
 				user: null,
 				isAuthenticated: false,
-				err: action.payload.msg,
 				loading: false,
 			};
 		case LOAD_SUCCESS:
 			return {
 				...state,
-				isAuthenticated: true,
-				isLoading: false,
 				user: action.payload,
+				isAuthenticated: true,
 				loading: false,
 			};
 		case LOGOUT:
 			localStorage.removeItem('flagToken');
-		return {
-			token: null,
-			user: null,
-			isAuthenticated: false,
-			err: null,
-			loading: false,
-		}
+			return {
+				token: null,
+				user: null,
+				isAuthenticated: false,
+				loading: false,
+			};
 		default:
 			return state;
 	}

@@ -40,7 +40,7 @@ const Register = styled(Link)`
 	margin-top: 10px;
 `;
 
-const LoginPresenter = ({ username, password, err, handleChange, handleSubmit }) => {
+const LoginPresenter = ({ username, password, handleChange, handleSubmit, err }) => {
 	return (
 		<Container>
 			<Box>
@@ -56,8 +56,8 @@ const LoginPresenter = ({ username, password, err, handleChange, handleSubmit })
 				>
 					<Title>로그인</Title>
 					<Form.Item
-						validateStatus={err.type === 'username' ? 'error' : ''}
-						help={err.type === 'username' ? err.msg : ''}
+						validateStatus={err === 400 ? 'error' : ''}
+						help={err === 400 && '계정이 존재하지 않습니다.'}
 					>
 						<Input
 							prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
@@ -68,8 +68,8 @@ const LoginPresenter = ({ username, password, err, handleChange, handleSubmit })
 						/>
 					</Form.Item>
 					<Form.Item
-						validateStatus={err.type === 'password' ? 'error' : ''}
-						help={err.type === 'password' ? err.msg : ''}
+						validateStatus={err === 401 ? 'error' : ''}
+						help={err === 401 && '비밀번호가 일치하지 않습니다.'}
 					>
 						<Input
 							prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
@@ -87,7 +87,7 @@ const LoginPresenter = ({ username, password, err, handleChange, handleSubmit })
 							block
 							disabled={username === '' || password === '' ? true : false}
 						>
-							Log in
+							로그인
 						</Button>
 					</Form.Item>
 					<Register to="/register">회원가입</Register>
@@ -101,9 +101,9 @@ const LoginPresenter = ({ username, password, err, handleChange, handleSubmit })
 LoginPresenter.prototypes = {
 	username: PropTypes.string.isRequired,
 	password: PropTypes.string.isRequired,
-	err: PropTypes.object.isRequired,
 	handleChange: PropTypes.func.isRequired,
 	handleSubmit: PropTypes.func.isRequired,
+	err: PropTypes.number,
 };
 
 export default LoginPresenter;
