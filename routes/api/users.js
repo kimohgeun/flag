@@ -3,22 +3,30 @@ const config = require('config');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const auth = require('../../middleware/auth');
-const User = require('../../models/User');
 const fs = require('fs');
-
 const router = express.Router();
+
+// 스키마
+const User = require('../../models/User');
+const File = require('../../models/File');
 
 // 회원가입
 router.post('/register', (req, res) => {
 	const { username, password } = req.body;
 	User.findOne({ username }).then(user => {
 		// 중복가입 체크
-		if (user) return res.json({ err: 400 });
+		if (user) return res.json({ err: 403 });
 
 		// 새로운 계정 생성
 		const newUser = new User({
 			username,
 			password,
+		});
+
+		// 파일 목록
+		const newFile = new File({
+			uploader: username,
+			files: [],
 		});
 
 		// 비밀번호 암호화
@@ -30,6 +38,7 @@ router.post('/register', (req, res) => {
 				// 업로드 폴더 생성
 				fs.mkdirSync(`files/${newUser.username}`);
 				// 데이터베이스 저장
+				newFile.save();
 				newUser.save().then(user => {
 					// 토큰 발급
 					jwt.sign({ id: user.id }, config.get('jwtSecret'), { expiresIn: 3600 }, (err, token) => {

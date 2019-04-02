@@ -66,8 +66,8 @@ const RegisterPresenter = ({ username, password, passwordConfirm, handleChange, 
 				>
 					<Text>회원가입</Text>
 					<Form.Item
-						validateStatus={err === 400 ? 'error' : ''}
-						help={err === 400 && '이미 가입된 계정입니다.'}
+						validateStatus={err === 403 ? 'error' : ''}
+						help={err === 403 && '이미 가입된 계정입니다.'}
 					>
 						<Input
 							prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}

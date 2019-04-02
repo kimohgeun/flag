@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import HomePresenter from './HomePresenter';
 import { connect } from 'react-redux';
 import { logout } from '../../actions/userAction';
-import { upload, clearUploaded } from '../../actions/fileAction';
+import { upload, clearUploaded, getFileList } from '../../actions/fileAction';
 import { clearError } from '../../actions/errorAction';
 import { message } from 'antd';
 
@@ -44,8 +44,13 @@ class HomeContainer extends Component {
 		upload(formData);
 	};
 
+	componentDidMount() {
+		const { getFileList, username } = this.props;
+		getFileList(username);
+	}
+
 	componentDidUpdate(prevProps) {
-		const { uploaded, clearUploaded, err, clearError } = this.props;
+		const { uploaded, clearUploaded, err, clearError, getFileList, username } = this.props;
 		if (uploaded !== prevProps.uploaded) {
 			if (uploaded) {
 				const success = () => {
@@ -60,6 +65,7 @@ class HomeContainer extends Component {
 				document.querySelector('#file_name').value = null;
 				document.querySelector('#file_input').value = null;
 				clearUploaded();
+				getFileList(username);
 			}
 		}
 		if (err !== prevProps.err) {
@@ -87,7 +93,7 @@ class HomeContainer extends Component {
 
 	render() {
 		const { flag, file, loading } = this.state;
-		const { username, logout } = this.props;
+		const { username, logout, fileList } = this.props;
 
 		return (
 			<HomePresenter
@@ -96,6 +102,7 @@ class HomeContainer extends Component {
 				loading={loading}
 				username={username}
 				logout={logout}
+				fileList={fileList}
 				onChange={this.onChange}
 				onSubmit={this.onSubmit}
 				displayFileName={this.displayFileName}
@@ -108,9 +115,10 @@ const mapStateToProps = state => ({
 	username: state.userReducer.user.username,
 	uploaded: state.fileReducer.uploaded,
 	err: state.errorReducer.err,
+	fileList: state.fileReducer.fileList,
 });
 
 export default connect(
 	mapStateToProps,
-	{ logout, upload, clearUploaded, clearError }
+	{ logout, upload, clearUploaded, clearError, getFileList }
 )(HomeContainer);

@@ -1,4 +1,4 @@
-import { UPLOAD_SUCCESS, UPLOAD_FAIL, CEAR_UPLOADED } from '../actions/fileAction';
+import { UPLOAD_SUCCESS, UPLOAD_FAIL, CEAR_UPLOADED, GET_LIST } from '../actions/fileAction';
 
 // Initial State
 const initialState = {
@@ -21,6 +21,11 @@ export default function(state = initialState, action) {
 		case UPLOAD_FAIL:
 			return {
 				...state,
+			};
+		case GET_LIST:
+			return {
+				...state,
+				fileList: action.payload,
 			};
 		default:
 			return state;
