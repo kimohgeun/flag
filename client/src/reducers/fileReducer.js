@@ -1,4 +1,4 @@
-import { UPLOAD_SUCCESS, UPLOAD_FAIL, CEAR_UPLOADED, GET_LIST } from '../actions/fileAction';
+import { UPLOAD_SUCCESS, UPLOAD_FAIL, GET_LIST, CLEAR_UPLOADED, DELETE_FILE } from '../actions/fileAction';
 
 // Initial State
 const initialState = {
@@ -11,21 +11,28 @@ export default function(state = initialState, action) {
 		case UPLOAD_SUCCESS:
 			return {
 				...state,
-				...action.payload,
-			};
-		case CEAR_UPLOADED:
-			return {
-				...state,
-				uploaded: false,
+				fileList: state.fileList.concat(action.payload),
+				uploaded: true,
 			};
 		case UPLOAD_FAIL:
 			return {
 				...state,
 			};
+		case CLEAR_UPLOADED:
+			return {
+				...state,
+				uploaded: false,
+			};
 		case GET_LIST:
 			return {
 				...state,
 				fileList: action.payload,
+			};
+		case DELETE_FILE:
+			console.log(action.payload)
+			return {
+				...state,
+				fileList: state.fileList.filter(file => file.flag !== action.payload),
 			};
 		default:
 			return state;

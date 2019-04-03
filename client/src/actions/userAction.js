@@ -78,10 +78,8 @@ export const logout = () => {
 // 로드 유저
 export const loadUser = () => (dispatch, getState) => {
 	const token = getState().userReducer.token;
-
 	// 토큰 없음
 	if (token === null) return dispatch({ type: AUTH_FAIL });
-
 	// Headers
 	const config = {
 		headers: {

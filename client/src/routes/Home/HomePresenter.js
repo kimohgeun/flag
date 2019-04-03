@@ -54,10 +54,10 @@ const UploadForm = styled.form`
 const UploadFormBox = styled.div`
 	width: 50%;
 	padding: 20px;
-	display:flex;
-	flex-direction:column;
-	justify-content:center;
-	align-items:center;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 `;
 
 const FileInputLabel = styled.label`
@@ -96,7 +96,18 @@ const Flag = styled.input`
 	font-weight: 500;
 `;
 
-const HomePresenter = ({ flag, file, loading, username, logout, fileList, onChange, onSubmit, displayFileName }) => (
+const HomePresenter = ({
+	flag,
+	file,
+	loading,
+	username,
+	logout,
+	fileList,
+	deleteFile,
+	onChange,
+	onSubmit,
+	displayFileName,
+}) => (
 	<>
 		<Top>
 			<TopBox>
@@ -149,7 +160,14 @@ const HomePresenter = ({ flag, file, loading, username, logout, fileList, onChan
 									style={{ margin: '20px 0' }}
 									title={file.filename}
 									bordered={true}
-									extra={<span>삭제</span>}
+									extra={
+										<Icon
+											type="delete"
+											theme="filled"
+											style={{ cursor: 'pointer' }}
+											onClick={()=>deleteFile(username, file.flag)}
+										/>
+									}
 								>
 									<Icon
 										type="flag"
@@ -157,7 +175,7 @@ const HomePresenter = ({ flag, file, loading, username, logout, fileList, onChan
 										style={{ fontSize: '1.2rem', color: '#3d91f7', marginRight: '10px' }}
 									/>
 									{file.flag}
-									<span style={{ float: 'right' }}>복사</span>
+									<span style={{ float: 'right', color: '#3d91f7', cursor: 'pointer' }}>공유</span>
 								</Card>
 							</Col>
 						))}

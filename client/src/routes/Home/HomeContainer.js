@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import HomePresenter from './HomePresenter';
 import { connect } from 'react-redux';
 import { logout } from '../../actions/userAction';
-import { upload, clearUploaded, getFileList } from '../../actions/fileAction';
+import { upload, clearUploaded, getFileList, deleteFile } from '../../actions/fileAction';
 import { clearError } from '../../actions/errorAction';
 import { message } from 'antd';
 
@@ -50,9 +50,10 @@ class HomeContainer extends Component {
 	}
 
 	componentDidUpdate(prevProps) {
-		const { uploaded, clearUploaded, err, clearError, getFileList, username } = this.props;
-		if (uploaded !== prevProps.uploaded) {
-			if (uploaded) {
+		const { err, clearError, uploaded, clearUploaded } = this.props;
+		// 업로드 체크
+		if (uploaded) {
+			if (uploaded !== prevProps.uploaded) {
 				const success = () => {
 					message.success('업로드를 완료하였습니다.');
 				};
@@ -65,11 +66,22 @@ class HomeContainer extends Component {
 				document.querySelector('#file_name').value = null;
 				document.querySelector('#file_input').value = null;
 				clearUploaded();
-				getFileList(username);
 			}
 		}
+
+		// 에러 체크
 		if (err !== prevProps.err) {
-			if (err === 400) {
+			if(err === 400 ){
+				const error = () => {
+					message.error('이미 저장된 파일입니다.');
+				};
+				this.setState({
+					loading: false,
+				});
+				error();
+				clearError();
+			}
+			else if (err === 401) {
 				const error = () => {
 					message.error('이미 사용된 플래그입니다.');
 				};
@@ -78,7 +90,7 @@ class HomeContainer extends Component {
 				});
 				error();
 				clearError();
-			} else if (err === 401) {
+			} else if (err === 402) {
 				const error = () => {
 					message.error('업로드를 실패하였습니다.');
 				};
@@ -93,7 +105,7 @@ class HomeContainer extends Component {
 
 	render() {
 		const { flag, file, loading } = this.state;
-		const { username, logout, fileList } = this.props;
+		const { username, logout, fileList, deleteFile } = this.props;
 
 		return (
 			<HomePresenter
@@ -103,6 +115,7 @@ class HomeContainer extends Component {
 				username={username}
 				logout={logout}
 				fileList={fileList}
+				deleteFile={deleteFile}
 				onChange={this.onChange}
 				onSubmit={this.onSubmit}
 				displayFileName={this.displayFileName}
@@ -113,12 +126,12 @@ class HomeContainer extends Component {
 
 const mapStateToProps = state => ({
 	username: state.userReducer.user.username,
-	uploaded: state.fileReducer.uploaded,
 	err: state.errorReducer.err,
 	fileList: state.fileReducer.fileList,
+	uploaded: state.fileReducer.uploaded,
 });
 
 export default connect(
 	mapStateToProps,
-	{ logout, upload, clearUploaded, clearError, getFileList }
+	{ logout, upload, clearUploaded, clearError, getFileList, deleteFile }
 )(HomeContainer);
