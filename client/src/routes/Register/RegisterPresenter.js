@@ -1,118 +1,104 @@
 import React from 'react';
+import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
 import { Form, Icon, Input, Button } from 'antd';
-
-// styled componets
-const Container = styled.div`
-	width: 100%;
-	height: 100vh;
-	background: #3d91f7;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-`;
-
-const Box = styled.div`
-	width: 1024px;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-`;
-
-const Title = styled.span`
-	color: #fff;
-	font-weight: bold;
-	font-size: 30px;
-	letter-spacing: 5px;
-`;
-
-const SubTitle = styled.span`
-	color: #fff;
-	font-size: 1.3rem;
-	font-weight: 200;
-	margin-bottom: 50px;
-`;
-
-const Text = styled.span`
-	display: block;
-	text-align: center;
-	font-size: 1.5rem;
-	color: #3d91f7;
-	font-weight: bold;
-	margin-bottom: 20px;
-`;
-
-const Register = styled(Link)`
-	float: right;
-	margin-top: 10px;
-`;
 
 const RegisterPresenter = ({ username, password, passwordConfirm, handleChange, handleSubmit, err }) => {
 	return (
 		<Container>
-			<Box>
-				<Title>FLAG</Title>
-				<SubTitle>File sharing using simple URL</SubTitle>
-				<Form
-					style={{
-						width: '350px',
-						background: '#fff',
-						padding: '30px 20px',
-						borderRadius: '5px',
-					}}
-					onSubmit={handleSubmit}
+			<Title>
+				<UserEditIcon className="fas fa-user-edit" />
+				회원가입
+			</Title>
+			<RegisterForm onSubmit={handleSubmit}>
+				<FormItem
+					validateStatus={err === '중복가입' ? 'error' : ''}
+					help={err === '중복가입' ? '이미 사용 중인 유저 네임입니다.' : ''}
 				>
-					<Text>회원가입</Text>
-					<Form.Item
-						validateStatus={err === 403 ? 'error' : ''}
-						help={err === 403 && '이미 가입된 계정입니다.'}
+					<Input
+						size="large"
+						prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+						type="text"
+						placeholder="Username"
+						name="username"
+						value={username}
+						onChange={handleChange}
+					/>
+				</FormItem>
+				<FormItem>
+					<Input
+						size="large"
+						prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+						type="password"
+						placeholder="Password"
+						name="password"
+						value={password}
+						onChange={handleChange}
+					/>
+				</FormItem>
+				<FormItem>
+					<Input
+						size="large"
+						prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+						type="password"
+						placeholder="Password Confirm"
+						name="passwordConfirm"
+						value={passwordConfirm}
+						onChange={handleChange}
+					/>
+				</FormItem>
+				<FormItem>
+					<Button
+						type="primary"
+						htmlType="submit"
+						size="large"
+						block
+						disabled={username === '' || password === '' || passwordConfirm === ''}
 					>
-						<Input
-							prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-							name="username"
-							value={username}
-							placeholder="Username"
-							onChange={handleChange}
-						/>
-					</Form.Item>
-					<Form.Item>
-						<Input
-							prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-							type="password"
-							name="password"
-							value={password}
-							placeholder="Password"
-							onChange={handleChange}
-						/>
-					</Form.Item>
-					<Form.Item>
-						<Input
-							prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-							type="password"
-							name="passwordConfirm"
-							value={passwordConfirm}
-							placeholder="Password Confirm"
-							onChange={handleChange}
-						/>
-					</Form.Item>
-					<Form.Item>
-						<Button
-							type="primary"
-							htmlType="submit"
-							block
-							disabled={username === '' || password === '' || passwordConfirm === '' ? true : false}
-						>
-							회원가입
-						</Button>
-					</Form.Item>
-					<Register to="/">로그인</Register>
-				</Form>
-			</Box>
+						회원가입
+					</Button>
+				</FormItem>
+			</RegisterForm>
+			<LoginLink to="/">로그인</LoginLink>
 		</Container>
 	);
 };
+
+// styled
+const Container = styled.div`
+	width: 100%;
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+`;
+
+const Title = styled.h1`
+	color: #1790ff;
+	font-size: 2.5rem;
+	font-weight: bold;
+	letter-spacing: 5px;
+	margin-bottom: 30px;
+`;
+
+const UserEditIcon = styled.i`
+	font-size: 2.5rem;
+`;
+
+const RegisterForm = styled(Form)`
+	width: 300px;
+`;
+
+const FormItem = styled(Form.Item)`
+	text-align: center;
+`;
+
+const LoginLink = styled(Link)`
+	font-size: 1.1rem;
+	font-weight: bold;
+`;
 
 // prop types check
 RegisterPresenter.prototypes = {

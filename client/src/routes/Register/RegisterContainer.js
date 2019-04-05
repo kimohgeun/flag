@@ -25,6 +25,11 @@ class RegisterContainer extends Component {
 		clearError();
 	};
 
+	componentDidMount() {
+		const { clearError } = this.props;
+		clearError();
+	}
+
 	render() {
 		const { username, password, passwordConfirm } = this.state;
 		return (

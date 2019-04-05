@@ -79,26 +79,32 @@ export const logout = () => {
 export const loadUser = () => (dispatch, getState) => {
 	const token = getState().userReducer.token;
 	// 토큰 없음
-	if (token === null) return dispatch({ type: AUTH_FAIL });
-	// Headers
-	const config = {
-		headers: {
-			'x-auth-token': token,
-		},
-	};
-	axios.get('/api/users/user', config).then(res => {
-		if (res.data.err) {
-			// 로드 실패
-			dispatch(getError(res.data.err, 'AUTH_FAIL'));
-			dispatch({
-				type: AUTH_FAIL,
-			});
-		} else {
-			// 로드 성공
-			dispatch({
-				type: LOAD_SUCCESS,
-				payload: res.data,
-			});
-		}
-	});
+	if(token === null) {
+		dispatch(getError('토큰 없음', 'AUTH_FAIL'));
+		dispatch({
+			type: AUTH_FAIL,
+		});
+	} else {
+		// Headers
+		const config = {
+			headers: {
+				'x-auth-token': token,
+			},
+		};
+		axios.get('/api/users/user', config).then(res => {
+			if (res.data.err) {
+				// 로드 실패
+				dispatch(getError(res.data.err, 'AUTH_FAIL'));
+				dispatch({
+					type: AUTH_FAIL,
+				});
+			} else {
+				// 로드 성공
+				dispatch({
+					type: LOAD_SUCCESS,
+					payload: res.data,
+				});
+			}
+		});
+	}
 };

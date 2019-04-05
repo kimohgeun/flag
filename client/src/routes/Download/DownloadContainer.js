@@ -4,19 +4,24 @@ import axios from 'axios';
 
 class DownloadContainer extends Component {
 	state = {
+		filename: '',
 		downloading: false,
 		err: false,
+		loading: true,
 	};
 
-	async componentDidMount() {
+	componentDidMount() {
 		const { username, flagname } = this.props.match.params;
-
 		axios({
 			url: `/api/files/download/${username}/${flagname}`,
 			method: 'GET',
 			responseType: 'blob',
 		}).then(res => {
 			const filename = decodeURIComponent(res.headers.filename);
+			this.setState({
+				filename,
+				loading: false,
+			});
 			if (filename === 'undefined') {
 				return this.setState({ err: true });
 			} else {
@@ -29,14 +34,15 @@ class DownloadContainer extends Component {
 				link.click();
 				this.setState({
 					downloading: true,
+					loading: false,
 				});
 			}
 		});
 	}
 
 	render() {
-		const { downloading, err } = this.state;
-		return <DownloadPresenter downloading={downloading} err={err} />;
+        const { loading, downloading, filename, err } = this.state;
+        return <DownloadPresenter loading={loading} downloading={downloading} filename={filename} err={err} />;
 	}
 }
 

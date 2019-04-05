@@ -1,68 +1,81 @@
 import React from 'react';
-import styled from 'styled-components';
-import { Icon } from 'antd';
-// styled componets
+import styled, { keyframes } from 'styled-components';
+
+const DownloadPresenter = ({ loading, downloading, filename, err }) => (
+	<Container>
+		{downloading && (
+			<Box>
+				<Logo>
+					<FlagIcon className="fas fa-flag" />
+					FLAG
+				</Logo>
+				<Icon className="fas fa-cloud-download-alt" />
+				<Text>{filename} 파일을 다운로드 합니다.</Text>
+			</Box>
+		)}
+		{err && (
+			<Box>
+				<Logo>
+					<FlagIcon className="fas fa-flag" />
+					FLAG
+				</Logo>
+				<Icon className="fas fa-search" />
+				<Text>유저 네임 혹은 플래그를 확인해 주세요.</Text>
+			</Box>
+		)}
+	</Container>
+);
+
+// styled
+
 const Container = styled.div`
 	width: 100%;
 	height: 100vh;
 	display: flex;
-	flex-direction:column;
+	flex-direction: column;
 	justify-content: center;
 	align-items: center;
 	background: #3d91f7;
 `;
-const Title = styled.span`
-	font-size: 4rem;
-	font-weight: bold;
-	color: #fff;
-	letter-spacing: 5px;
-`;
 
-const SubTitle = styled.span`
-	font-size: 2rem;
-	font-weight: 200;
-	color: #fff;
+const boxFade = keyframes`
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 `;
 
 const Box = styled.div`
-	width: 1024px;
 	display: flex;
+	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+	animation: ${boxFade} 1s linear;
+`;
+
+const Logo = styled.h1`
 	color: #fff;
+	font-family: 'Baloo Chettan', cursive;
+	font-size: 3rem;
+	letter-spacing: 5px;
+	margin-bottom: 10px;
+`;
+
+const FlagIcon = styled.i`
+	font-size: 2.5rem;
+`;
+
+const Icon = styled.i`
+	font-size: 10rem;
+	color: #fff;
+	margin-bottom: 20px;
 `;
 
 const Text = styled.span`
-	margin: 20px 10px;
+	font-weight: bold;
+	color: #fff;
 `;
-
-const DownloadPresenter = ({ downloading, err }) => (
-	<Container>
-		<Title>FLAG</Title>
-		<SubTitle>File sharing using simple URL</SubTitle>
-		<Box>
-			{downloading && (
-				<>
-					<Icon
-						type="flag"
-						theme="filled"
-						style={{ fontSize: '1.5rem', color: '#2ecc71' }}
-					/>
-					<Text>파일을 다운로드 중입니다.</Text>
-				</>
-			)}
-			{err && (
-				<>
-					<Icon
-						type="flag"
-						theme="filled"
-						style={{ fontSize: '1.5rem', color: '#e74c3c' }}
-					/>
-					<Text>유저네임 또는 플래그명을 확인해 주세요.</Text>
-				</>
-			)}
-		</Box>
-	</Container>
-);
 
 export default DownloadPresenter;

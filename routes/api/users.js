@@ -15,15 +15,13 @@ router.post('/register', (req, res) => {
 	const { username, password } = req.body;
 	User.findOne({ username }).then(user => {
 		// 중복가입 체크
-		if (user) return res.json({ err: 403 });
-
-		// 새로운 계정 생성
+		if (user) return res.json({ err: '중복가입' });
+		// 새로운 계정 DB 생성
 		const newUser = new User({
 			username,
 			password,
 		});
-
-		// 파일 목록
+		// 파일 목록 DB 생성
 		const newFile = new File({
 			uploader: username,
 			files: [],
@@ -63,10 +61,10 @@ router.post('/login', (req, res) => {
 
 	User.findOne({ username }).then(user => {
 		// 유저 확인
-		if (!user) return res.json({ err: 400 });
+		if (!user) return res.json({ err: '유저 없음' });
 		// 비밀번호 확인
 		bcrypt.compare(password, user.password).then(isMatch => {
-			if (!isMatch) return res.json({ err: 401 });
+			if (!isMatch) return res.json({ err: '비밀번호 틀림' });
 			// 토큰 발급
 			jwt.sign({ id: user.id }, config.get('jwtSecret'), { expiresIn: 3600 }, (err, token) => {
 				if (err) throw err;

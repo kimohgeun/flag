@@ -14,12 +14,12 @@ router.post('/upload', auth, (req, res) => {
 		file => {
 			// 파일 중복
 			if (file !== null) {
-				return res.json({ err: 400 });
+				return res.json({ err: '파일 중복' });
 			} else {
 				File.findOne({ $and: [{ uploader: username }, { files: { $elemMatch: { flag: flagname } } }] }).then(
 					file => {
 						// 플래그 중복
-						if (file !== null) return res.json({ err: 401 });
+						if (file !== null) return res.json({ err: '플래그 중복' });
 						// 객체 생성
 						const addFile = {
 							uploader: username,
@@ -30,7 +30,7 @@ router.post('/upload', auth, (req, res) => {
 						// 파일 저장
 						userfile.mv(`files/${username}/` + userfile.name, err => {
 							// 저장 실패
-							if (err) return res.json({ err: 402 });
+							if (err) return res.json({ err: '업로드 실패' });
 							// DB 저장
 							File.update({ uploader: username }, { $push: { files: addFile } }).then(() =>
 								res.json(addFile)

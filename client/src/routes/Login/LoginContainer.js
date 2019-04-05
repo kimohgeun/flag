@@ -3,7 +3,6 @@ import LoginPrenter from './LoginPresenter';
 import { connect } from 'react-redux';
 import { login } from '../../actions/userAction';
 import { clearError } from '../../actions/errorAction';
-import { message } from 'antd';
 
 class LoginContainer extends Component {
 	state = {
@@ -25,6 +24,11 @@ class LoginContainer extends Component {
 		clearError();
 	};
 
+	componentDidMount() {
+		const { clearError } = this.props;
+		clearError();
+	}
+
 	render() {
 		const { username, password } = this.state;
 		return (
@@ -36,19 +40,6 @@ class LoginContainer extends Component {
 				err={this.props.err}
 			/>
 		);
-	}
-
-	componentDidUpdate(prevProps) {
-		const { err, clearError } = this.props;
-		if (err !== prevProps.err) {
-			if (err === 402) {
-				const info = () => {
-					message.info('토큰이 만료되었습니다.');
-				};
-				info();
-				clearError();
-			}
-		}
 	}
 }
 

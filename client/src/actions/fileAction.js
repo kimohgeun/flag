@@ -1,11 +1,14 @@
 import axios from 'axios';
 import { getError } from './errorAction';
 
+export const GET_LIST = 'GET_LIST';
+
 export const UPLOAD_SUCCESS = 'UPLOAD_SUCCESS';
 export const UPLOAD_FAIL = 'UPLOAD_FAIL';
-export const GET_LIST = 'GET_LIST';
 export const CLEAR_UPLOADED = 'CLEAR_UPLOADED';
+
 export const DELETE_FILE = 'DELETE_FILE';
+export const CLEAR_DELETED = 'CLEAR_DELETED';
 
 // 업로드
 export const upload = formData => (dispatch, getState) => {
@@ -34,13 +37,6 @@ export const upload = formData => (dispatch, getState) => {
 			});
 		}
 	});
-};
-
-// 클리어
-export const clearUploaded = () => {
-	return {
-		type: CLEAR_UPLOADED,
-	};
 };
 
 // 파일 리스트 가져오기
@@ -79,4 +75,17 @@ export const deleteFile = (username, flagname) => (dispatch, getState) => {
 			payload: res.data,
 		})
 	);
+};
+
+// 클리어
+export const clearUploaded = () => {
+	return {
+		type: CLEAR_UPLOADED,
+	};
+};
+
+export const clearDeleted = () => {
+	return {
+		type: CLEAR_DELETED,
+	};
 };

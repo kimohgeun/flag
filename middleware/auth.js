@@ -9,7 +9,7 @@ auth = (req, res, next) => {
 		next();
 	} catch (error) {
 		// 토큰 만료
-		res.json({ err: 402 });
+		res.json({ err: '토큰 만료' });
 	}
 };
 

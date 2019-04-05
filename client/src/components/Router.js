@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 // 컴포넌트
 import Download from '../routes/Download';
@@ -8,27 +8,25 @@ import Login from '../routes/Login';
 import Register from '../routes/Register';
 
 const Router = ({ loading, isAuthenticated }) => (
-	<BrowserRouter>
+	<>
+		<Route path="/:username/:flagname" component={Download} />
 		{!loading && (
 			<>
 				{isAuthenticated ? (
 					<Switch>
 						<Route path="/" exact component={Home} />
-						<Route path="/:username/:flagname" component={Download} />
 						<Redirect from="*" to="/" />
 					</Switch>
 				) : (
 					<Switch>
 						<Route path="/" exact component={Login} />
-						<Route path="/login" component={Login} />
 						<Route path="/register" component={Register} />
-						<Route path="/:username/:flagname" component={Download} />
 						<Redirect from="*" to="/" />
 					</Switch>
 				)}
 			</>
 		)}
-	</BrowserRouter>
+	</>
 );
 
 const mapStateToProps = state => ({
