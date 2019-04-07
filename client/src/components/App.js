@@ -7,7 +7,7 @@ import { loadUser } from '../actions/userAction';
 class App extends Component {
 	componentDidMount() {
 		const pathname = window.location.pathname;
-		if (pathname === '/') {
+		if (pathname === '/' || pathname === '/register' || pathname === '/login') {
 			this.props.loadUser();
 		}
 	}

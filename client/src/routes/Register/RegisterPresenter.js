@@ -4,7 +4,16 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { Form, Icon, Input, Button } from 'antd';
 
-const RegisterPresenter = ({ username, password, passwordConfirm, handleChange, handleSubmit, err }) => {
+const RegisterPresenter = ({
+	username,
+	password,
+	handleChange,
+	handleSubmit,
+	err,
+	handlePasswordCheck,
+	pwChecked,
+	pwErr,
+}) => {
 	return (
 		<Container>
 			<Title>
@@ -37,15 +46,18 @@ const RegisterPresenter = ({ username, password, passwordConfirm, handleChange, 
 						onChange={handleChange}
 					/>
 				</FormItem>
-				<FormItem>
+				<FormItem
+					validateStatus={pwErr === true ? 'error' : ''}
+					help={pwErr === true ? '비밀번호가 서로 일치하지 않습니다.' : ''}
+				>
 					<Input
 						size="large"
 						prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
 						type="password"
 						placeholder="Password Confirm"
 						name="passwordConfirm"
-						value={passwordConfirm}
-						onChange={handleChange}
+						id="passwordConfirm"
+						onKeyUp={handlePasswordCheck}
 					/>
 				</FormItem>
 				<FormItem>
@@ -54,7 +66,7 @@ const RegisterPresenter = ({ username, password, passwordConfirm, handleChange, 
 						htmlType="submit"
 						size="large"
 						block
-						disabled={username === '' || password === '' || passwordConfirm === ''}
+						disabled={username === '' || password === '' || pwChecked === false}
 					>
 						회원가입
 					</Button>

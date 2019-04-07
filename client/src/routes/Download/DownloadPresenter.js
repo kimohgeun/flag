@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 
-const DownloadPresenter = ({ loading, downloading, filename, err }) => (
+const DownloadPresenter = ({ downloading, filename, err }) => (
 	<Container>
 		{downloading && (
 			<Box>
