@@ -87,4 +87,20 @@ router.get('/user', auth, (req, res) => {
 		.then(user => res.json(user));
 });
 
+// 회원 탈퇴
+router.post('/delete', auth, (req, res) => {
+	const { username, password } = req.body;
+	User.findOne({ username }).then(user => {
+		// 비밀번호 확인
+		bcrypt.compare(password, user.password).then(isMatch => {
+			if (!isMatch) return res.json({ err: '비밀번호 틀림' });
+			// 데이터베이스 & 파일 삭제
+			File.remove({ uploader: username })
+				.then(() => User.remove({ username: username }))
+				.then(() => fs.rmdirSync(`files/${username}`))
+				.then(() => res.json({ msg: 'user delete' }));
+		});
+	});
+});
+
 module.exports = router;

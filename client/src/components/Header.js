@@ -1,23 +1,54 @@
 import React, { Component } from 'react';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
+// 리덕스
 import { connect } from 'react-redux';
-import { logout } from '../actions/userAction';
+import { logout, deleteUser } from '../actions/userAction';
+// 스타일
+import styled from 'styled-components';
+import { Modal, Form, Input, Icon } from 'antd';
+// 데이터 타입
+import PropTypes from 'prop-types';
 
 class Header extends Component {
 	state = {
-		menuDisplay: false,
+		menuVisible: false,
+		deleteVisible: false,
+		password: '',
 	};
 
-	clickMenu = () => {
+	handleClick = type => {
+		if (type === 'menuVisible') {
+			this.setState({
+				menuVisible: !this.state.menuVisible,
+			});
+		} else {
+			this.setState({
+				deleteVisible: !this.state.deleteVisible,
+			});
+		}
+	};
+
+	handleChange = e => {
 		this.setState({
-			menuDisplay: !this.state.menuDisplay,
+			password: e.target.value,
 		});
 	};
 
+	handleCancel = () => {
+		this.setState({
+			deleteVisible: false,
+			menuVisible: false,
+			password: '',
+		});
+	};
+
+	handleOk = () => {
+		const { deleteUser } = this.props;
+		const { password } = this.state;
+		deleteUser(password);
+	};
+
 	render() {
-		const { menuDisplay } = this.state;
-		const { logout } = this.props;
+		const { menuVisible, deleteVisible, password } = this.state;
 		return (
 			<Container>
 				<Box>
@@ -25,18 +56,57 @@ class Header extends Component {
 						<FlagIcon className="fas fa-flag" />
 						FLAG
 					</Logo>
-					<UserIcon className="fas fa-user-circle" onClick={this.clickMenu} />
-					<Menu display={menuDisplay === false ? 'false' : 'true'}>
-						<MenuItem onClick={logout}>로그아웃</MenuItem>
-						<MenuItem>회원탈퇴</MenuItem>
-					</Menu>
+					<UserIcon
+						id="header-menu"
+						className="fas fa-user-circle"
+						onClick={() => this.handleClick('menuVisible')}
+					/>
+					<MenuModal menuVisible={menuVisible} handleClick={this.handleClick} />
 				</Box>
+				<DeleteModal
+					deleteVisible={deleteVisible}
+					handleCancel={this.handleCancel}
+					password={password}
+					handleChange={this.handleChange}
+					handleOk={this.handleOk}
+				/>
 			</Container>
 		);
 	}
 }
 
-// styled
+const MenuModal = ({ menuVisible, handleClick }) => (
+	<Menu menuVisible={menuVisible === false ? 'false' : 'true'}>
+		<MenuItem>로그아웃</MenuItem>
+		<MenuItem onClick={() => handleClick('deleteVisible')}>회원탈퇴</MenuItem>
+	</Menu>
+);
+
+const DeleteModal = ({ deleteVisible, password, handleOk, handleCancel, handleChange }) => (
+	<Modal
+		title="회원탈퇴"
+		okText="탈퇴"
+		cancelText="취소"
+		onOk={handleOk}
+		onCancel={handleCancel}
+		visible={deleteVisible}
+	>
+		<Form>
+			<p>패스워드를 입력하세요</p>
+			<Form.Item>
+				<Input
+					prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+					type="password"
+					value={password}
+					placeholder="Password"
+					onChange={handleChange}
+				/>
+			</Form.Item>
+		</Form>
+	</Modal>
+);
+
+// 컴포넌트 스타일
 const Container = styled.div`
 	width: 100%;
 	background: #1790ff;
@@ -80,7 +150,7 @@ const Menu = styled.div`
 	background: #fff;
 	padding: 10px;
 	border-radius: 5px;
-	display: ${props => (props.display === 'false' ? 'none' : 'flex')};
+	display: ${props => (props.menuVisible === 'false' ? 'none' : 'flex')};
 `;
 
 const MenuItem = styled.span`
@@ -93,7 +163,9 @@ const MenuItem = styled.span`
 	transition: color 0.2s linear;
 `;
 
+// 데이터 타입 검증
+
 export default connect(
 	null,
-	{ logout }
+	{ logout, deleteUser }
 )(Header);

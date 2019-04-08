@@ -6,6 +6,8 @@ import {
 	REGISTER_FAIL,
 	LOAD_SUCCESS,
 	AUTH_FAIL,
+	DELETE_USER_FAIL,
+	DELETE_USER_SUCCESS,
 } from '../actions/userAction';
 
 // Initial State
@@ -45,12 +47,17 @@ export default function(state = initialState, action) {
 				loading: false,
 			};
 		case LOGOUT:
+		case DELETE_USER_SUCCESS:
 			localStorage.removeItem('flagToken');
 			return {
 				token: null,
 				user: null,
 				isAuthenticated: false,
 				loading: false,
+			};
+		case DELETE_USER_FAIL:
+			return {
+				...state,
 			};
 		default:
 			return state;

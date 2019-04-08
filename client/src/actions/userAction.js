@@ -8,6 +8,8 @@ export const LOGIN_FAIL = 'LOGIN_FAIL';
 export const LOGOUT = 'LOGOUT';
 export const LOAD_SUCCESS = 'LOAD_SUCCESS';
 export const AUTH_FAIL = 'AUTH_FAIL';
+export const DELETE_USER_SUCCESS = 'DELETE_USER_SUCCESS';
+export const DELETE_USER_FAIL = 'DELETE_USER_FAIL';
 
 // 회원가입
 export const register = (username, password) => dispatch => {
@@ -79,7 +81,7 @@ export const logout = () => {
 export const loadUser = () => (dispatch, getState) => {
 	const token = getState().userReducer.token;
 	// 토큰 없음
-	if(token === null) {
+	if (token === null) {
 		dispatch(getError('토큰 없음', 'AUTH_FAIL'));
 		dispatch({
 			type: AUTH_FAIL,
@@ -107,4 +109,38 @@ export const loadUser = () => (dispatch, getState) => {
 			}
 		});
 	}
+};
+
+// 회원 탈퇴
+export const deleteUser = password => (dispatch, getState) => {
+	// 토큰
+	const token = getState().userReducer.token;
+	const username = getState().userReducer.user.username;
+	// 헤더
+	const config = {
+		headers: {
+			'x-auth-token': token,
+		},
+	};
+	// body
+	const body = {
+		username: username,
+		password: password,
+	};
+	// API 요청
+	axios.post(`/api/users/delete`, body, config).then(res => {
+		if (res.data.err) {
+			// 회원탈퇴 실패
+			dispatch(getError(res.data.err, 'DELETE_USER_FAIL'));
+			dispatch({
+				type: DELETE_USER_FAIL,
+			});
+		} else {
+			// 회원탈퇴 성공
+			dispatch({
+				type: DELETE_USER_SUCCESS,
+				payload: res.data,
+			});
+		}
+	});
 };
