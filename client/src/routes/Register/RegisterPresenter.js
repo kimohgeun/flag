@@ -1,18 +1,22 @@
 import React from 'react';
+// 스타일
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import { Form, Icon, Input, Button } from 'antd';
+// 라우터
+import { Link } from 'react-router-dom';
+// 데이터 타입
+import PropTypes from 'prop-types';
 
 const RegisterPresenter = ({
 	username,
 	password,
-	handleChange,
-	handleSubmit,
-	err,
-	handlePasswordCheck,
 	pwChecked,
 	pwErr,
+	err,
+	loading,
+	handlePasswordCheck,
+	handleChange,
+	handleSubmit,
 }) => {
 	return (
 		<Container>
@@ -65,6 +69,7 @@ const RegisterPresenter = ({
 						type="primary"
 						htmlType="submit"
 						size="large"
+						loading={loading}
 						block
 						disabled={username === '' || password === '' || pwChecked === false}
 					>
@@ -116,10 +121,13 @@ const LoginLink = styled(Link)`
 RegisterPresenter.prototypes = {
 	username: PropTypes.string.isRequired,
 	password: PropTypes.string.isRequired,
-	passwordConfirm: PropTypes.string.isRequired,
+	pwChecked: PropTypes.string.isRequired,
+	pwErr: PropTypes.string,
+	err: PropTypes.string,
+	loading: PropTypes.bool.isRequired,
+	handlePasswordCheck: PropTypes.func.isRequired,
 	handleChange: PropTypes.func.isRequired,
 	handleSubmit: PropTypes.func.isRequired,
-	err: PropTypes.number,
 };
 
 export default RegisterPresenter;

@@ -1,10 +1,13 @@
 import React from 'react';
+// 스타일
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import { Form, Icon, Input, Button } from 'antd';
+// 라우터
+import { Link } from 'react-router-dom';
+// 데이터 타입
+import PropTypes from 'prop-types';
 
-const LoginPresenter = ({ username, password, handleChange, handleSubmit, err }) => {
+const LoginPresenter = ({ username, password, err, loading, handleChange, handleSubmit }) => {
 	return (
 		<Container>
 			<Logo>
@@ -28,7 +31,7 @@ const LoginPresenter = ({ username, password, handleChange, handleSubmit, err })
 				</FormItem>
 				<FormItem
 					validateStatus={err === '비밀번호 틀림' ? 'error' : ''}
-					help={err === '비밀번호 틀림' ? '패스워드를 확인해주세요.' : ''}
+					help={err === '비밀번호 틀림' ? '비밀번호가 일치하지 않습니다.' : ''}
 				>
 					<Input
 						size="large"
@@ -45,6 +48,7 @@ const LoginPresenter = ({ username, password, handleChange, handleSubmit, err })
 						type="primary"
 						htmlType="submit"
 						size="large"
+						loading={loading}
 						block
 						disabled={username === '' || password === ''}
 					>
@@ -57,7 +61,7 @@ const LoginPresenter = ({ username, password, handleChange, handleSubmit, err })
 	);
 };
 
-// styled
+// 스타일 컴포넌트
 const Container = styled.div`
 	width: 100%;
 	height: 100vh;
@@ -92,13 +96,14 @@ const RegisterLink = styled(Link)`
 	font-weight: bold;
 `;
 
-// types check
+// 데이터 타입 검증
 LoginPresenter.prototypes = {
 	username: PropTypes.string.isRequired,
 	password: PropTypes.string.isRequired,
+	err: PropTypes.string,
+	loading: PropTypes.bool.isRequired,
 	handleChange: PropTypes.func.isRequired,
 	handleSubmit: PropTypes.func.isRequired,
-	err: PropTypes.number,
 };
 
 export default LoginPresenter;

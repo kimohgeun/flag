@@ -6,15 +6,7 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import rootReducer from './reducers';
-// 리덕스 개발자 도구 추가
-const devTools = window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__();
-const store = createStore(
-	rootReducer,
-	compose(
-		applyMiddleware(thunk),
-		devTools
-	)
-);
+const store = createStore(rootReducer, compose(applyMiddleware(thunk)));
 
 ReactDOM.render(
 	<Provider store={store}>

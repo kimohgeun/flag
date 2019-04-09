@@ -1,8 +1,9 @@
 import React from 'react';
-import styled from 'styled-components';
 import Header from '../../components/Header';
 import Upload from '../../components/Upload';
 import List from '../../components/List';
+// 스타일
+import styled from 'styled-components';
 
 const Home = () => (
 	<Container>

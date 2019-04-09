@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Icon } from 'antd';
 import { upload, clearUploaded } from '../actions/fileAction';
@@ -51,7 +50,7 @@ class Upload extends Component {
 		if (err !== prevProps.err) {
 			if (err === '파일 중복') {
 				const error = () => {
-					message.error('이미 업로드된 파일입니다.');
+					message.error('이미 업로드된 파일명이 있습니다.');
 				};
 				await this.setState({
 					uploading: false,
@@ -87,8 +86,12 @@ class Upload extends Component {
 				};
 				success();
 				await this.setState({
+					flag: '',
+					file: null,
 					uploading: false,
 				});
+				document.querySelector('#file_name').value = null;
+				document.querySelector('#input_file').value = null;
 				clearUploaded();
 			}
 		}
@@ -122,7 +125,7 @@ class Upload extends Component {
 	}
 }
 
-// styled
+// 스타일 컴포넌트
 const Container = styled.div`
 	width: 100%;
 	background: #1790ff;

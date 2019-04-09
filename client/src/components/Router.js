@@ -28,10 +28,10 @@ const Router = ({ loading, isAuthenticated }) => (
 					)}
 				</>
 			)}
+			<Route path="/:username/:flagname" exact component={Download} />
 			<Route path="/" exact to="/" />
 			<Route path="/login" to="/" />
 			<Route path="/register" to="/" />
-			<Route path="/:username/:flagname" exact component={Download} />
 			<Route path="*" component={NotFound} />
 		</Switch>
 	</BrowserRouter>

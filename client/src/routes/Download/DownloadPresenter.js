@@ -1,5 +1,6 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
+import PropTypes from 'prop-types';
 
 const DownloadPresenter = ({ downloading, filename, err }) => (
 	<Container>
@@ -26,8 +27,7 @@ const DownloadPresenter = ({ downloading, filename, err }) => (
 	</Container>
 );
 
-// styled
-
+// 스타일 컴포넌트
 const Container = styled.div`
 	width: 100%;
 	height: 100vh;
@@ -77,5 +77,12 @@ const Text = styled.span`
 	font-weight: bold;
 	color: #fff;
 `;
+
+// 데이터 타입
+DownloadPresenter.prototypes = {
+	downloading: PropTypes.bool.isRequired,
+	filename: PropTypes.string,
+	err: PropTypes.bool.isRequired,
+};
 
 export default DownloadPresenter;

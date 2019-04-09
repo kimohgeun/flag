@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import RegisterPresenter from './RegisterPresenter';
+// 리덕스
 import { connect } from 'react-redux';
 import { register } from '../../actions/userAction';
 import { clearError } from '../../actions/errorAction';
@@ -10,6 +11,7 @@ class RegisterContainer extends Component {
 		password: '',
 		pwChecked: false,
 		pwErr: false,
+		loading: false,
 	};
 
 	handleChange = e => {
@@ -25,13 +27,13 @@ class RegisterContainer extends Component {
 		if (password.match(passwordConfirm) && password.length === passwordConfirm.length) {
 			this.setState({
 				pwChecked: true,
-				pwErr: false
+				pwErr: false,
 			});
 		} else if (password.length !== passwordConfirm.length) {
 			this.setState({
 				pwChecked: false,
 			});
-			 if (password.match(passwordConfirm) !== null) {
+			if (password.match(passwordConfirm) !== null) {
 				this.setState({
 					pwErr: false,
 				});
@@ -48,12 +50,15 @@ class RegisterContainer extends Component {
 		}
 	};
 
-	handleSubmit = e => {
+	handleSubmit = async e => {
 		e.preventDefault();
 		const { username, password } = this.state;
 		const { register, clearError } = this.props;
 		register(username, password);
-		clearError();
+		await clearError();
+		this.setState({
+			loading: true,
+		});
 	};
 
 	componentDidMount() {
@@ -61,18 +66,29 @@ class RegisterContainer extends Component {
 		clearError();
 	}
 
+	componentDidUpdate(prevProps) {
+		const { err } = this.props;
+		if (err !== prevProps.err) {
+			this.setState({
+				loading: false,
+			});
+		}
+	}
+
 	render() {
-		const { username, password, pwChecked, pwErr } = this.state;
+		const { username, password, pwChecked, pwErr, loading } = this.state;
+		const { err } = this.props;
 		return (
 			<RegisterPresenter
 				username={username}
 				password={password}
-				handleChange={this.handleChange}
-				handleSubmit={this.handleSubmit}
-				err={this.props.err}
-				handlePasswordCheck={this.handlePasswordCheck}
 				pwChecked={pwChecked}
 				pwErr={pwErr}
+				err={err}
+				loading={loading}
+				handlePasswordCheck={this.handlePasswordCheck}
+				handleChange={this.handleChange}
+				handleSubmit={this.handleSubmit}
 			/>
 		);
 	}

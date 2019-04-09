@@ -1,16 +1,35 @@
 import axios from 'axios';
 import { getError } from './errorAction';
 
-export const GET_LIST = 'GET_LIST';
+export const GET_LIST = 'file/GET_LIST';
+export const UPLOAD_SUCCESS = 'file/UPLOAD_SUCCESS';
+export const DELETE_SUCESS = 'file/DELETE_FILE_SUCESS';
+export const CLEAR_UPLOADED = 'file/CLEAR_UPLOADED';
+export const CLEAR_DELETED = 'file/CLEAR_DELETED';
 
-export const UPLOAD_SUCCESS = 'UPLOAD_SUCCESS';
-export const UPLOAD_FAIL = 'UPLOAD_FAIL';
-export const CLEAR_UPLOADED = 'CLEAR_UPLOADED';
+// GET
+export const getFileList = username => (dispatch, getState) => {
+	// 토큰
+	const token = getState().userReducer.token;
+	// 헤더
+	const config = {
+		headers: {
+			'x-auth-token': token,
+		},
+	};
+	// API 요청
+	axios
+		.get(`/api/files/list/${username}`, config)
+		.then(res =>
+			dispatch({
+				type: GET_LIST,
+				payload: res.data,
+			})
+		)
+		.catch(err => dispatch(getError(err.response.data.err, 'GET_LIST_FAIL')));
+};
 
-export const DELETE_FILE = 'DELETE_FILE';
-export const CLEAR_DELETED = 'CLEAR_DELETED';
-
-// 업로드
+// UPLOAD
 export const upload = formData => (dispatch, getState) => {
 	// 토큰
 	const token = getState().userReducer.token;
@@ -22,43 +41,20 @@ export const upload = formData => (dispatch, getState) => {
 		},
 	};
 	// API 요청
-	axios.post('/api/files/upload', formData, config).then(res => {
-		if (res.data.err) {
-			// 업로드 실패
-			dispatch(getError(res.data.err, 'UPLOAD_FAIL'));
-			dispatch({
-				type: UPLOAD_FAIL,
-			});
-		} else {
+	axios
+		.post('/api/files/upload', formData, config)
+		.then(res => {
 			// 업로드 성공
 			dispatch({
 				type: UPLOAD_SUCCESS,
 				payload: res.data,
 			});
-		}
-	});
-};
-
-// 파일 리스트 가져오기
-export const getFileList = username => (dispatch, getState) => {
-	// 토큰
-	const token = getState().userReducer.token;
-	// 헤더
-	const config = {
-		headers: {
-			'x-auth-token': token,
-		},
-	};
-	// API 요청
-	axios.get(`/api/files/list/${username}`, config).then(res =>
-		dispatch({
-			type: GET_LIST,
-			payload: res.data,
 		})
-	);
+		// 업로드 실패
+		.catch(err => dispatch(getError(err.response.data.err, 'UPLOAD_FAIL')));
 };
 
-// 파일 삭제
+// DELETE
 export const deleteFile = (username, flagname) => (dispatch, getState) => {
 	// 토큰
 	const token = getState().userReducer.token;
@@ -69,15 +65,20 @@ export const deleteFile = (username, flagname) => (dispatch, getState) => {
 		},
 	};
 	// API 요청
-	axios.get(`/api/files/delete/${username}/${flagname}`, config).then(res =>
-		dispatch({
-			type: DELETE_FILE,
-			payload: res.data,
+	axios
+		.get(`/api/files/delete/${username}/${flagname}`, config)
+		.then(res => {
+			// 삭제 성공
+			dispatch({
+				type: DELETE_SUCESS,
+				payload: res.data,
+			});
 		})
-	);
+		// 삭제 실패
+		.catch(err => dispatch(getError(err.response.data.err, 'DELETE_FAIL')));
 };
 
-// 클리어
+// CLEAR
 export const clearUploaded = () => {
 	return {
 		type: CLEAR_UPLOADED,

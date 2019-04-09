@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getFileList, deleteFile, clearDeleted } from '../actions/fileAction';
 import { clearError } from '../actions/errorAction';
@@ -23,13 +22,12 @@ class List extends Component {
 		copyText.select();
 		document.execCommand('copy');
 		document.body.removeChild(copyText);
-		const info = () => {
-			message.info(`${address}를 복사하였습니다.`);
+		const success = () => {
+			message.success(`${address} 복사하였습니다.`);
 		};
-		info();
+		success();
 	};
 
-	// 삭제기능 모달
 	showDeleteModal = flag => {
 		this.setState({
 			visible: true,
@@ -71,34 +69,40 @@ class List extends Component {
 	}
 
 	render() {
-		const { fileList } = this.props;
-		const { visible, confirmLoading, filename, flag } = this.state;
+		const { fileList, loading } = this.props;
+		const { visible, confirmLoading } = this.state;
 		return (
 			<Container>
-				<Row gutter={16}>
-					{fileList.length !== 0 && (
-						<>
-							{fileList.map(file => (
-								<Col span={8} key={file._id}>
-									<Card>
-										<FlagIcon className="fas fa-flag"> {file.flag}</FlagIcon>
-										<FileName>파일 : {file.filename}</FileName>
-										<ButtonBox>
-											<ClipboardButton
-												className="fas fa-clipboard"
-												onClick={() => this.clipboard(file.flag)}
-											/>
-											<DeleteButton
-												className="fas fa-trash"
-												onClick={() => this.showDeleteModal(file.flag)}
-											/>
-										</ButtonBox>
-									</Card>
-								</Col>
-							))}
-						</>
-					)}
-				</Row>
+				<FlagIcon className="fas fa-flag"> {!loading && fileList.length}개</FlagIcon>
+				<Title>파일 리스트</Title>
+				{loading ? (
+					'loading...'
+				) : (
+					<Row gutter={16}>
+						{fileList.length !== 0 && (
+							<>
+								{fileList.map(file => (
+									<Col span={8} key={file._id}>
+										<Card>
+											<FlagIcon className="fas fa-flag"> {file.flag}</FlagIcon>
+											<FileName>파일 : {file.filename}</FileName>
+											<ButtonBox>
+												<ClipboardButton
+													className="fas fa-clipboard"
+													onClick={() => this.clipboard(file.flag)}
+												/>
+												<DeleteButton
+													className="fas fa-trash"
+													onClick={() => this.showDeleteModal(file.flag)}
+												/>
+											</ButtonBox>
+										</Card>
+									</Col>
+								))}
+							</>
+						)}
+					</Row>
+				)}
 				<Modal
 					visible={visible}
 					onOk={this.handleOk}
@@ -108,7 +112,7 @@ class List extends Component {
 					cancelText={'취소'}
 				>
 					<ModalContent>
-						<span style={{fontWeight: 'bold' }}>파일을 삭제하시겠습니까?</span>
+						<span style={{ fontWeight: 'bold' }}>파일을 삭제하시겠습니까?</span>
 					</ModalContent>
 				</Modal>
 			</Container>
@@ -120,6 +124,16 @@ class List extends Component {
 const Container = styled.div`
 	width: 1024px;
 	padding: 20px 0;
+	display: flex;
+	flex-direction: column;
+`;
+
+const Title = styled.span`
+	flex: wrap;
+	color: #1790ff;
+	font-size: 1.2rem;
+	font-weight: bold;
+	padding: 10px 0;
 `;
 
 const Card = styled.div`
@@ -177,6 +191,7 @@ const ModalContent = styled.div`
 const mapStateToProps = state => ({
 	fileList: state.fileReducer.fileList,
 	deleted: state.fileReducer.deleted,
+	loading: state.fileReducer.loading,
 	username: state.userReducer.user.username,
 });
 

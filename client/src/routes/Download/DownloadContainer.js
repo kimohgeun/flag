@@ -7,7 +7,6 @@ class DownloadContainer extends Component {
 		filename: '',
 		downloading: false,
 		err: false,
-		loading: true,
 	};
 
 	componentDidMount() {
@@ -16,16 +15,13 @@ class DownloadContainer extends Component {
 			url: `/api/files/download/${username}/${flagname}`,
 			method: 'GET',
 			responseType: 'blob',
-		}).then(res => {
-			const filename = decodeURIComponent(res.headers.filename);
-			this.setState({
-				filename,
-				loading: false,
-			});
-			if (filename === 'undefined') {
-				return this.setState({ err: true });
-			} else {
-				console.log(filename);
+		})
+			.then(res => {
+				const filename = decodeURIComponent(res.headers.filename);
+				this.setState({
+					filename,
+				});
+				// 다운로드
 				const url = window.URL.createObjectURL(new Blob([res.data]));
 				const link = document.createElement('a');
 				link.href = url;
@@ -34,15 +30,18 @@ class DownloadContainer extends Component {
 				link.click();
 				this.setState({
 					downloading: true,
-					loading: false,
 				});
-			}
-		});
+			})
+			.catch(() =>
+				this.setState({
+					err: true,
+				})
+			);
 	}
 
 	render() {
-        const { loading, downloading, filename, err } = this.state;
-        return <DownloadPresenter loading={loading} downloading={downloading} filename={filename} err={err} />;
+		const { filename, downloading, err } = this.state;
+		return <DownloadPresenter filename={filename} downloading={downloading} err={err} />;
 	}
 }
 

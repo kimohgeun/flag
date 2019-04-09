@@ -1,8 +1,15 @@
-import { GET_LIST, UPLOAD_SUCCESS, UPLOAD_FAIL, CLEAR_UPLOADED, DELETE_FILE, CLEAR_DELETED } from '../actions/fileAction';
+import {
+	GET_LIST,
+	UPLOAD_SUCCESS,
+	DELETE_SUCESS,
+	CLEAR_UPLOADED,
+	CLEAR_DELETED,
+} from '../actions/fileAction';
 
 // Initial State
 const initialState = {
 	fileList: [],
+	loading: true,
 	uploaded: false,
 	deleted: false,
 };
@@ -13,6 +20,7 @@ export default function(state = initialState, action) {
 			return {
 				...state,
 				fileList: action.payload,
+				loading: false,
 			};
 		case UPLOAD_SUCCESS:
 			return {
@@ -20,20 +28,16 @@ export default function(state = initialState, action) {
 				fileList: state.fileList.concat(action.payload),
 				uploaded: true,
 			};
-		case UPLOAD_FAIL:
+		case DELETE_SUCESS:
 			return {
 				...state,
+				fileList: state.fileList.filter(file => file.flag !== action.payload),
+				deleted: true,
 			};
 		case CLEAR_UPLOADED:
 			return {
 				...state,
 				uploaded: false,
-			};
-		case DELETE_FILE:
-			return {
-				...state,
-				fileList: state.fileList.filter(file => file.flag !== action.payload),
-				deleted: true,
 			};
 		case CLEAR_DELETED:
 			return {

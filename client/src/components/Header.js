@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 // 리덕스
 import { connect } from 'react-redux';
 import { logout, deleteUser } from '../actions/userAction';
+import { clearError } from '../actions/errorAction';
 // 스타일
 import styled from 'styled-components';
 import { Modal, Form, Input, Icon } from 'antd';
@@ -13,6 +14,7 @@ class Header extends Component {
 		menuVisible: false,
 		deleteVisible: false,
 		password: '',
+		confirmLoading: false,
 	};
 
 	handleClick = type => {
@@ -34,21 +36,37 @@ class Header extends Component {
 	};
 
 	handleCancel = () => {
+		const { clearError } = this.props;
 		this.setState({
 			deleteVisible: false,
 			menuVisible: false,
 			password: '',
 		});
+		clearError();
 	};
 
-	handleOk = () => {
-		const { deleteUser } = this.props;
+	handleOk = async () => {
+		const { deleteUser, clearError } = this.props;
 		const { password } = this.state;
+		await clearError();
 		deleteUser(password);
+		this.setState({
+			confirmLoading: true,
+		});
 	};
+
+	componentDidUpdate(prevProps) {
+		const { err } = this.props;
+		if (err !== prevProps.err) {
+			this.setState({
+				confirmLoading: false,
+			});
+		}
+	}
 
 	render() {
-		const { menuVisible, deleteVisible, password } = this.state;
+		const { menuVisible, deleteVisible, password, confirmLoading } = this.state;
+		const { logout, err } = this.props;
 		return (
 			<Container>
 				<Box>
@@ -61,39 +79,45 @@ class Header extends Component {
 						className="fas fa-user-circle"
 						onClick={() => this.handleClick('menuVisible')}
 					/>
-					<MenuModal menuVisible={menuVisible} handleClick={this.handleClick} />
+					<MenuModal menuVisible={menuVisible} logout={logout} handleClick={this.handleClick} />
 				</Box>
 				<DeleteModal
+					confirmLoading={confirmLoading}
 					deleteVisible={deleteVisible}
-					handleCancel={this.handleCancel}
 					password={password}
+					handleCancel={this.handleCancel}
 					handleChange={this.handleChange}
 					handleOk={this.handleOk}
+					err={err}
 				/>
 			</Container>
 		);
 	}
 }
 
-const MenuModal = ({ menuVisible, handleClick }) => (
+const MenuModal = ({ menuVisible, logout, handleClick }) => (
 	<Menu menuVisible={menuVisible === false ? 'false' : 'true'}>
-		<MenuItem>로그아웃</MenuItem>
+		<MenuItem onClick={logout}>로그아웃</MenuItem>
 		<MenuItem onClick={() => handleClick('deleteVisible')}>회원탈퇴</MenuItem>
 	</Menu>
 );
 
-const DeleteModal = ({ deleteVisible, password, handleOk, handleCancel, handleChange }) => (
+const DeleteModal = ({ confirmLoading, err, deleteVisible, password, handleChange, handleOk, handleCancel }) => (
 	<Modal
 		title="회원탈퇴"
 		okText="탈퇴"
 		cancelText="취소"
+		confirmLoading={confirmLoading}
 		onOk={handleOk}
 		onCancel={handleCancel}
 		visible={deleteVisible}
 	>
 		<Form>
 			<p>패스워드를 입력하세요</p>
-			<Form.Item>
+			<Form.Item
+				validateStatus={err === '비밀번호 틀림' ? 'error' : ''}
+				help={err === '비밀번호 틀림' ? '비밀번호가 일치하지 않습니다.' : ''}
+			>
 				<Input
 					prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
 					type="password"
@@ -106,7 +130,7 @@ const DeleteModal = ({ deleteVisible, password, handleOk, handleCancel, handleCh
 	</Modal>
 );
 
-// 컴포넌트 스타일
+// 스타일 컴포넌트
 const Container = styled.div`
 	width: 100%;
 	background: #1790ff;
@@ -164,8 +188,26 @@ const MenuItem = styled.span`
 `;
 
 // 데이터 타입 검증
+MenuModal.prototypes = {
+	menuVisible: PropTypes.bool.isRequired,
+	logout: PropTypes.func.isRequired,
+	handleClick: PropTypes.func.isRequired,
+};
+
+DeleteModal.prototypes = {
+	confirmLoading: PropTypes.bool.isRequired,
+	deleteVisible: PropTypes.bool.isRequired,
+	password: PropTypes.string.isRequired,
+	handleChange: PropTypes.func.isRequired,
+	handleOk: PropTypes.func.isRequired,
+	handleCancel: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = state => ({
+	err: state.errorReducer.err,
+});
 
 export default connect(
-	null,
-	{ logout, deleteUser }
+	mapStateToProps,
+	{ logout, deleteUser, clearError }
 )(Header);
