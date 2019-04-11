@@ -24,29 +24,38 @@ class RegisterContainer extends Component {
 	handlePasswordCheck = e => {
 		const { password } = this.state;
 		const passwordConfirm = document.querySelector('#passwordConfirm').value;
-		if (password.match(passwordConfirm) && password.length === passwordConfirm.length) {
-			this.setState({
-				pwChecked: true,
-				pwErr: false,
-			});
-		} else if (password.length !== passwordConfirm.length) {
-			this.setState({
-				pwChecked: false,
-			});
-			if (password.match(passwordConfirm) !== null) {
+		if (password.length === passwordConfirm.length) {
+			if (password.match(passwordConfirm)) {
 				this.setState({
+					pwChecked: true,
 					pwErr: false,
 				});
-			}
-			if (password.length < passwordConfirm.length) {
+			} else {
 				this.setState({
+					pwChecked: false,
 					pwErr: true,
 				});
 			}
-		} else if (password.match(passwordConfirm) === null) {
-			this.setState({
-				pwErr: true,
-			});
+		} else {
+			if (password.length < passwordConfirm.length) {
+				this.setState({
+					pwChecked: false,
+					pwErr: true,
+				});
+			}
+			if (password.length > passwordConfirm.length) {
+				if (password.match(passwordConfirm)) {
+					this.setState({
+						pwChecked: false,
+						pwErr: false,
+					});
+				} else {
+					this.setState({
+						pwChecked: false,
+						pwErr: true,
+					});
+				}
+			}
 		}
 	};
 
