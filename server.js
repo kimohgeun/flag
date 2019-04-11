@@ -1,15 +1,10 @@
 const express = require('express');
+const app = express();
 const mongoose = require('mongoose');
 const config = require('config');
-const fileUpload = require('express-fileupload');
-
-const app = express();
 
 // body parser
 app.use(express.json());
-
-// express fileupload
-app.use(fileUpload());
 
 // DB 연결
 const db = config.get('mongoURI');

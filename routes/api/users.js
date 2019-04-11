@@ -1,11 +1,9 @@
 const express = require('express');
+const router = express.Router();
 const config = require('config');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const auth = require('../../middleware/auth');
-const fs = require('fs');
-const router = express.Router();
-const rimraf = require('rimraf');
 
 // 스키마
 const User = require('../../models/User');
@@ -33,8 +31,6 @@ router.post('/register', (req, res) => {
 			bcrypt.hash(newUser.password, salt, (err, hash) => {
 				if (err) throw err;
 				newUser.password = hash;
-				// 업로드 폴더 생성
-				fs.mkdirSync(`files/${newUser.username}`);
 				// 데이터베이스 저장
 				newFile.save().then(() =>
 					newUser.save().then(user => {
@@ -96,11 +92,7 @@ router.post('/delete', auth, (req, res) => {
 		bcrypt.compare(password, user.password).then(isMatch => {
 			if (!isMatch) return res.status(400).json({ err: '비밀번호 틀림' });
 			// 데이터베이스 & 파일 삭제
-			File.remove({ uploader: username })
-				.then(() => User.remove({ username: username }))
-				.then(() => rimraf.sync(`files/${username}`))
-				.then(() => res.status(200).send())
-				.catch(err => res.status(400).json(err));
+			// aws 연동
 		});
 	});
 });

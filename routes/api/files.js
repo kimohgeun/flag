@@ -1,46 +1,64 @@
 const express = require('express');
+const router = express.Router();
 const auth = require('../../middleware/auth');
-const File = require('../../models/File');
 const mime = require('mime');
 const fs = require('fs');
+const formidable = require('formidable');
+const AWS = require('aws-sdk');
 
-const router = express.Router();
+// 스키마
+const File = require('../../models/File');
+
+// AWS S3
+const awsS3 = require('../../config/default.json').awsS3;
+const s3 = new AWS.S3(awsS3);
 
 // 파일 업로드
 router.post('/upload', auth, (req, res) => {
-	const { username, flagname } = req.body;
-	const { userfile } = req.files;
-	File.findOne({ $and: [{ uploader: username }, { files: { $elemMatch: { filename: userfile.name } } }] }).then(
-		file => {
-			// 파일 중복
-			if (file !== null) {
-				return res.status(400).json({ err: '파일 중복' });
-			} else {
-				File.findOne({ $and: [{ uploader: username }, { files: { $elemMatch: { flag: flagname } } }] }).then(
-					file => {
+	const form = new formidable.IncomingForm();
+	form.parse(req, function(err, fields, files) {
+		if (err) throw err;
+		const { username, flagname } = fields;
+		const { userfile } = files;
+		File.findOne({ $and: [{ uploader: username }, { files: { $elemMatch: { filename: userfile.name } } }] }).then(
+			file => {
+				// 파일 중복
+				if (file !== null) {
+					return res.status(400).json({ err: '파일 중복' });
+				} else {
+					File.findOne({
+						$and: [{ uploader: username }, { files: { $elemMatch: { flag: flagname } } }],
+					}).then(file => {
 						// 플래그 중복
 						if (file !== null) return res.status(400).json({ err: '플래그 중복' });
 						// 객체 생성
 						const addFile = {
 							uploader: username,
 							filename: userfile.name,
-							path: `files/${username}/${userfile.name}`,
+							path: `https://s3.ap-northeast-2.amazonaws.com/flag-kog/${username}/${userfile.name}`,
 							flag: flagname,
 						};
 						// 파일 저장
-						userfile.mv(`files/${username}/` + userfile.name, err => {
-							// 저장 실패
-							if (err) return res.status(400).json({ err: '업로드 실패' });
-							// DB 저장
-							File.update({ uploader: username }, { $push: { files: addFile } }).then(() =>
-								res.json(addFile)
-							);
+						const params = {
+							Bucket: 'flag-kog',
+							Key: `${username}/${userfile.name}`,
+							ACL: 'public-read',
+							Body: require('fs').createReadStream(userfile.path),
+						};
+						s3.upload(params, err => {
+							if (err) {
+								return res.status(400).json({ err: '업로드 실패' });
+							} else {
+								File.update({ uploader: username }, { $push: { files: addFile } }).then(() =>
+									res.json(addFile)
+								);
+							}
 						});
-					}
-				);
+					});
+				}
 			}
-		}
-	);
+		);
+	});
 });
 
 // 파일 다운로드
@@ -89,13 +107,9 @@ router.get('/delete/:username/:flagname', auth, (req, res) => {
 		});
 		const filePath = deleteFile[0].path;
 		// DB 삭제
-		File.update({ uploader: username }, { $pull: { files: { flag: flagname } } })
-			// 파일 삭제
-			.then(() => fs.unlinkSync(filePath))
-			.then(() => {
-				res.json(flagname);
-			})
-			.catch(err => res.status(400).json(err));
+		File.update({ uploader: username }, { $pull: { files: { flag: flagname } } });
+		// 파일 삭제
+		// aws 연동
 	});
 });
 
