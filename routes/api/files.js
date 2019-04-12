@@ -35,7 +35,7 @@ router.post('/upload', auth, (req, res) => {
 						const addFile = {
 							uploader: username,
 							filename: userfile.name,
-							path: `https://s3.ap-northeast-2.amazonaws.com/flag-kog/${username}/${userfile.name}`,
+							path: `https://s3.ap-northeast-2.amazonaws.com/flag-ohgoodkim/${username}/${userfile.name}`,
 							flag: flagname,
 						};
 						// 파일 저장
@@ -49,11 +49,40 @@ router.post('/upload', auth, (req, res) => {
 							if (err) {
 								return res.status(400).json({ err: '업로드 실패' });
 							} else {
+								// DB 저장
 								File.update({ uploader: username }, { $push: { files: addFile } }).then(() =>
 									res.json(addFile)
 								);
 							}
 						});
+					});
+				}
+			}
+		);
+	});
+});
+
+// 파일 삭제
+router.get('/delete/:username/:flagname', auth, (req, res) => {
+	const { username, flagname } = req.params;
+	File.findOne({ $and: [{ uploader: username }, { files: { $elemMatch: { flag: flagname } } }] }).then(file => {
+		const deleteFile = file.files.filter(file => {
+			return file.flag === flagname;
+		});
+		const fileName = deleteFile[0].filename;
+		// 파일 삭제
+		s3.deleteObject(
+			{
+				Bucket: 'flag-ohgoodkim',
+				Key: `${username}/${fileName}`,
+			},
+			err => {
+				if (err) {
+					return res.status(400).json(err);
+				} else {
+					// DB 삭제
+					File.update({ uploader: username }, { $pull: { files: { flag: flagname } } }).then(() => {
+						res.json(flagname);
 					});
 				}
 			}
@@ -96,21 +125,6 @@ router.get('/list/:username', auth, (req, res) => {
 			res.json(uploader.files);
 		})
 		.catch(err => res.status(400).json(err));
-});
-
-// 파일 삭제
-router.get('/delete/:username/:flagname', auth, (req, res) => {
-	const { username, flagname } = req.params;
-	File.findOne({ $and: [{ uploader: username }, { files: { $elemMatch: { flag: flagname } } }] }).then(file => {
-		const deleteFile = file.files.filter(file => {
-			return file.flag === flagname;
-		});
-		const filePath = deleteFile[0].path;
-		// DB 삭제
-		File.update({ uploader: username }, { $pull: { files: { flag: flagname } } });
-		// 파일 삭제
-		// aws 연동
-	});
 });
 
 module.exports = router;
