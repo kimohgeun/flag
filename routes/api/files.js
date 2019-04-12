@@ -40,7 +40,7 @@ router.post('/upload', auth, (req, res) => {
 						};
 						// 파일 저장
 						const params = {
-							Bucket: 'flag-kog',
+							Bucket: 'flag-ohgoodkim',
 							Key: `${username}/${userfile.name}`,
 							ACL: 'public-read',
 							Body: require('fs').createReadStream(userfile.path),
@@ -98,18 +98,20 @@ router.get('/download/:username/:flagname', (req, res) => {
 		.then(file => {
 			// 유저네임 혹은 플래그 불일치
 			if (file === null) return res.status(400).send();
-			// 다운로드 파일
 			const findFile = file.files.filter(file => {
 				return file.flag === flagname;
 			});
 			const filePath = findFile[0].path;
 			const fileName = findFile[0].filename;
 			const mimetype = mime.lookup(filePath);
-			// 파일명 인코딩
+			// 헤더 세팅
 			res.setHeader('fileName', encodeURIComponent(fileName));
 			res.setHeader('Content-type', mimetype);
-			const filestream = fs.createReadStream(filePath);
-			filestream.pipe(res);
+			// aws s3 파일
+			const params = { Bucket: 'flag-ohgoodkim', Key: `${username}/${fileName}` };
+			s3.getObject(params)
+				.createReadStream()
+				.pipe(res);
 		})
 		.catch(err => res.status(400).json(err));
 });
