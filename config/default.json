@@ -1,9 +1,0 @@
-{
-	"mongoURI": "mongodb://ohgoodkim:awqs4875@ds125616.mlab.com:25616/flag",
-	"jwtSecret": "jwtSecret-flag-ohgoodkim",
-	"awsS3": {
-		"accessKeyId": "AKIA2QTLLPUN57WS77XP",
-		"secretAccessKey": "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",
-		"region": "ap-northeast-2"
-	}
-}
