@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../../middleware/auth');
 const mime = require('mime');
-const fs = require('fs');
 const formidable = require('formidable');
 const AWS = require('aws-sdk');
 

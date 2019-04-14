@@ -4,10 +4,15 @@ const config = require('config');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const auth = require('../../middleware/auth');
+const AWS = require('aws-sdk');
 
 // 스키마
 const User = require('../../models/User');
 const File = require('../../models/File');
+
+// AWS S3
+const awsS3 = require('../../config/default.json').awsS3;
+const s3 = new AWS.S3(awsS3);
 
 // 회원가입
 router.post('/register', (req, res) => {
@@ -91,8 +96,38 @@ router.post('/delete', auth, (req, res) => {
 		// 비밀번호 확인
 		bcrypt.compare(password, user.password).then(isMatch => {
 			if (!isMatch) return res.status(400).json({ err: '비밀번호 틀림' });
-			// 데이터베이스 & 파일 삭제
-			// aws 연동
+			// aws 폴더 삭제
+			let params = {
+				Bucket: 'flag-ohgoodkim',
+				Prefix: `${username}/`,
+			};
+			async function deleteFolder(params) {
+				const listedObjects = await s3.listObjectsV2(params).promise();
+				if (listedObjects.Contents.length === 0) {
+					return;
+				}
+				const deleteParams = {
+					Bucket: params.Bucket,
+					Delete: { Objects: [] },
+				};
+				listedObjects.Contents.forEach(({ Key }) => {
+					deleteParams.Delete.Objects.push({ Key });
+				});
+				await s3
+					.deleteObjects(deleteParams)
+					.promise()
+					// DB 삭제
+					.then(() => File.remove({ uploader: username }))
+					.then(() => User.remove({ username: username }))
+					.then(() => res.json({ msg: 'user delete' }));
+				if (listedObjects.IsTruncated) {
+					let obj = Object.assign({}, params, {
+						ContinuationToken: listedObjects.NextContinuationToken,
+					});
+					await this.deleteFolder(obj);
+				}
+			}
+			deleteFolder(params);
 		});
 	});
 });

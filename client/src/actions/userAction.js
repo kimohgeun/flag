@@ -116,7 +116,7 @@ export const deleteUser = password => (dispatch, getState) => {
 	};
 	// API 요청
 	axios
-		.post(`/api/users/delete`, body, config)
+		.post('/api/users/delete', body, config)
 		.then(res => {
 			// 회원탈퇴 성공
 			dispatch({

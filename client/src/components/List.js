@@ -23,7 +23,7 @@ class List extends Component {
 		document.execCommand('copy');
 		document.body.removeChild(copyText);
 		const success = () => {
-			message.success(`${address} 복사하였습니다.`);
+			message.success('클립보드에 복사되었습니다.');
 		};
 		success();
 	};
