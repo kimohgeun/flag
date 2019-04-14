@@ -16,7 +16,7 @@ class List extends Component {
 	clipboard = flag => {
 		const { username } = this.props;
 		let copyText = document.createElement('textarea');
-		const address = `http://localhost:3000/${username}/${flag}`;
+		const address = `https://flag-ohgoodkim.herokuapp.com/${username}/${flag}`;
 		document.body.appendChild(copyText);
 		copyText.value = address;
 		copyText.select();
