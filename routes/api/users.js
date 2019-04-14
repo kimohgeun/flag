@@ -36,6 +36,17 @@ router.post('/register', (req, res) => {
 			bcrypt.hash(newUser.password, salt, (err, hash) => {
 				if (err) throw err;
 				newUser.password = hash;
+				// 폴더 생성
+				s3.putObject({
+					Bucket: 'flag-ohgoodkim',
+					Key: username,
+				}).send(err => {
+					if ((err, data)) {
+						throw err;
+					} else {
+						console.log(data);
+					}
+				});
 				// 데이터베이스 저장
 				newFile.save().then(() =>
 					newUser.save().then(user => {
