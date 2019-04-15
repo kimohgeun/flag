@@ -46,7 +46,8 @@ router.post('/upload', auth, (req, res) => {
 						};
 						s3.upload(params, err => {
 							if (err) {
-								return res.status(400).json({ err: '업로드 실패' });
+								// return res.status(400).json({ err: '업로드 실패' });
+								return console.log(err)
 							} else {
 								// DB 저장
 								File.update({ uploader: username }, { $push: { files: addFile } }).then(() =>

@@ -1,16 +1,18 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import PropTypes from 'prop-types';
+import { Icon } from 'antd';
 
 const DownloadPresenter = ({ downloading, filename, err }) => (
 	<Container>
+		{downloading || err ? null : <Icon type="loading" style={{ color: '#fff', fontSize: '3rem' }} />}
 		{downloading && (
 			<Box>
 				<Logo>
 					<FlagIcon className="fas fa-flag" />
 					FLAG
 				</Logo>
-				<Icon className="fas fa-cloud-download-alt" />
+				<Icons className="fas fa-cloud-download-alt" />
 				<Text>{filename} 파일을 다운로드 합니다.</Text>
 			</Box>
 		)}
@@ -20,7 +22,7 @@ const DownloadPresenter = ({ downloading, filename, err }) => (
 					<FlagIcon className="fas fa-flag" />
 					FLAG
 				</Logo>
-				<Icon className="fas fa-search" />
+				<Icons className="fas fa-search" />
 				<Text>유저 네임 혹은 플래그를 확인해 주세요.</Text>
 			</Box>
 		)}
@@ -67,7 +69,7 @@ const FlagIcon = styled.i`
 	font-size: 2.5rem;
 `;
 
-const Icon = styled.i`
+const Icons = styled.i`
 	font-size: 10rem;
 	color: #fff;
 	margin-bottom: 20px;
