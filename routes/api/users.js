@@ -38,13 +38,11 @@ router.post('/register', (req, res) => {
 				newUser.password = hash;
 				// 폴더 생성
 				s3.putObject({
-					Bucket: 'flag-ohgoodkim',
-					Key: username,
+					Bucket: 'flag-kog',
+					Key: `${username}/`,
 				}).send(err => {
-					if ((err, data)) {
+					if (err) {
 						throw err;
-					} else {
-						console.log(data);
 					}
 				});
 				// 데이터베이스 저장
@@ -109,7 +107,7 @@ router.post('/delete', auth, (req, res) => {
 			if (!isMatch) return res.status(400).json({ err: '비밀번호 틀림' });
 			// aws 폴더 삭제
 			let params = {
-				Bucket: 'flag-ohgoodkim',
+				Bucket: 'flag-kog',
 				Prefix: `${username}/`,
 			};
 			async function deleteFolder(params) {

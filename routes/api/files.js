@@ -34,12 +34,12 @@ router.post('/upload', auth, (req, res) => {
 						const addFile = {
 							uploader: username,
 							filename: userfile.name,
-							path: `https://s3.ap-northeast-2.amazonaws.com/flag-ohgoodkim/${username}/${userfile.name}`,
+							path: `https://s3.ap-northeast-2.amazonaws.com/flag-kog/${username}/${userfile.name}`,
 							flag: flagname,
 						};
 						// 파일 저장
 						const params = {
-							Bucket: 'flag-ohgoodkim',
+							Bucket: 'flag-kog',
 							Key: `${username}/${userfile.name}`,
 							ACL: 'public-read',
 							Body: require('fs').createReadStream(userfile.path),
@@ -72,7 +72,7 @@ router.get('/delete/:username/:flagname', auth, (req, res) => {
 		// 파일 삭제
 		s3.deleteObject(
 			{
-				Bucket: 'flag-ohgoodkim',
+				Bucket: 'flag-kog',
 				Key: `${username}/${fileName}`,
 			},
 			err => {
@@ -107,7 +107,7 @@ router.get('/download/:username/:flagname', (req, res) => {
 			res.setHeader('fileName', encodeURIComponent(fileName));
 			res.setHeader('Content-type', mimetype);
 			// aws s3 파일
-			const params = { Bucket: 'flag-ohgoodkim', Key: `${username}/${fileName}` };
+			const params = { Bucket: 'flag-kog', Key: `${username}/${fileName}` };
 			s3.getObject(params)
 				.createReadStream()
 				.pipe(res);

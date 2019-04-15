@@ -115,7 +115,7 @@ class Upload extends Component {
 					<FileName id="file_name" readOnly />
 					<InputFlagBox>
 						<FlagIcon className="fas fa-flag" />
-						{`https://flag-ohgoodkim.herokuapp.com/${username}/`}
+						{`https://flag-kog.herokuapp.com/${username}/`}
 						<InputFlag type="text" value={flag} onChange={this.onChange} />
 					</InputFlagBox>
 					<UploadButton display={flag !== '' && file !== null ? 'true' : 'false'}>

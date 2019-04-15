@@ -21,6 +21,7 @@ mongoose
 app.use('/api/users', require('./routes/api/users'));
 app.use('/api/files', require('./routes/api/files'));
 
+// Serve static assets
 if (process.env.NODE_ENV === 'production') {
 	app.use(express.static('client/build'));
 	app.get('*', (req, res) => {
