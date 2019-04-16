@@ -1,4 +1,4 @@
-// 에러 가져오기
+// GET ERROR
 export const GET_ERROR = 'GET_ERROR';
 
 export const getError = (err, id = null) => {
@@ -8,7 +8,7 @@ export const getError = (err, id = null) => {
 	};
 };
 
-// 에러 지우기
+// CLEAR ERROR
 export const CLEAR_ERROR = 'CLEAR_ERROR';
 
 export const clearError = () => {

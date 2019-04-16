@@ -78,11 +78,11 @@ class List extends Component {
 				{loading ? (
 					'loading...'
 				) : (
-					<Row gutter={16}>
+					<Row>
 						{fileList.length !== 0 && (
 							<>
 								{fileList.map(file => (
-									<Col span={8} key={file._id}>
+									<Col key={file._id}>
 										<Card>
 											<FlagIcon className="fas fa-flag"> {file.flag}</FlagIcon>
 											<FileName>파일 : {file.name}</FileName>
@@ -126,6 +126,10 @@ const Container = styled.div`
 	padding: 20px 0;
 	display: flex;
 	flex-direction: column;
+	@media (max-width: 1023px) {
+		width: 100%;
+		padding: 20px 2%;
+	}
 `;
 
 const Title = styled.span`

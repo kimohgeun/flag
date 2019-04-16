@@ -1,10 +1,11 @@
 const express = require('express');
-const router = express.Router();
 const config = require('config');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const auth = require('../../middleware/auth');
 const AWS = require('aws-sdk');
+
+const router = express.Router();
 
 // 스키마
 const User = require('../../models/User');
@@ -49,7 +50,7 @@ router.post('/register', (req, res) => {
 				newFile.save().then(() =>
 					newUser.save().then(user => {
 						// 토큰 발급
-						jwt.sign({ id: user.id }, config.get('jwtSecret'), { expiresIn: 3600 }, (err, token) => {
+						jwt.sign({ id: user.id }, config.get('jwtSecret'), { expiresIn: 86400 }, (err, token) => {
 							if (err) throw err;
 							res.json({
 								token,
@@ -76,7 +77,7 @@ router.post('/login', (req, res) => {
 		bcrypt.compare(password, user.password).then(isMatch => {
 			if (!isMatch) return res.status(400).json({ err: '비밀번호 틀림' });
 			// 토큰 발급
-			jwt.sign({ id: user.id }, config.get('jwtSecret'), { expiresIn: 3600 }, (err, token) => {
+			jwt.sign({ id: user.id }, config.get('jwtSecret'), { expiresIn: 86400 }, (err, token) => {
 				if (err) throw err;
 				res.json({
 					token,
@@ -95,7 +96,7 @@ router.get('/user', auth, (req, res) => {
 	User.findById(req.user.id)
 		.select('-password')
 		.then(user => res.json(user))
-		.catch(err => res.status(400).json(err));
+		.catch(err => res.status(400).json({ err: err }));
 });
 
 // 회원탈퇴

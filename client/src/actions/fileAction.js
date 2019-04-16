@@ -7,7 +7,7 @@ export const DELETE_SUCESS = 'file/DELETE_FILE_SUCESS';
 export const CLEAR_UPLOADED = 'file/CLEAR_UPLOADED';
 export const CLEAR_DELETED = 'file/CLEAR_DELETED';
 
-// GET
+// GET LIST
 export const getFileList = username => (dispatch, getState) => {
 	// 토큰
 	const token = getState().userReducer.token;

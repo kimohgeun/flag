@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
-// 리덕스
 import { connect } from 'react-redux';
 import { logout, deleteUser } from '../actions/userAction';
 import { clearError } from '../actions/errorAction';
-// 스타일
 import styled from 'styled-components';
 import { Modal, Form, Input, Icon } from 'antd';
-// 데이터 타입
 import PropTypes from 'prop-types';
 
 class Header extends Component {
@@ -144,6 +141,10 @@ const Box = styled.div`
 	display: flex;
 	justify-content: space-between;
 	position: relative;
+	@media (max-width: 1023px) {
+		width: 100%;
+		padding: 0 2%;
+	}
 `;
 
 const Logo = styled.h1`
@@ -175,6 +176,9 @@ const Menu = styled.div`
 	padding: 10px;
 	border-radius: 5px;
 	display: ${props => (props.menuVisible === 'false' ? 'none' : 'flex')};
+	@media (max-width: 1023px) {
+		margin-right: 2%;
+	}
 `;
 
 const MenuItem = styled.span`

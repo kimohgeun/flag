@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { Icon } from 'antd';
 import { upload, clearUploaded } from '../actions/fileAction';
 import { clearError } from '../actions/errorAction';
-import { message } from 'antd';
+import { message, Icon } from 'antd';
+import styled from 'styled-components';
 
 class Upload extends Component {
 	state = {
@@ -99,7 +98,6 @@ class Upload extends Component {
 
 	render() {
 		const { flag, uploading, file } = this.state;
-		const { username } = this.props;
 		return (
 			<Container>
 				<Form onSubmit={this.onSubmit}>
@@ -112,10 +110,9 @@ class Upload extends Component {
 						</InputFileLabel>
 					)}
 					<InputFile id="input_file" type="file" onChange={this.displayFileName} />
-					<FileName id="file_name" readOnly />
-					<InputFlagBox>
+					<FileName id="file_name" display={file !== null ? 'true' : 'false'} readOnly />
+					<InputFlagBox display={file !== null ? 'true' : 'false'}>
 						<FlagIcon className="fas fa-flag" />
-						{`https://flag-kog.herokuapp.com/${username}/`}
 						<InputFlag type="text" value={flag} onChange={this.onChange} />
 					</InputFlagBox>
 					<UploadButton display={flag !== '' && file !== null ? 'true' : 'false'}>
@@ -141,6 +138,9 @@ const Form = styled.form`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	@media (max-width: 1023px) {
+		padding: 0 2%;
+	}
 `;
 
 const LoadingIcon = styled(Icon)`
@@ -182,6 +182,9 @@ const FileName = styled.input`
 	color: #fff;
 	font-weight: bold;
 	width: 100%;
+	visibility: ${props => (props.display === 'true' ? 'visibility' : 'hidden')};
+	opacity: ${props => (props.display === 'true' ? 1 : 0)};
+	transition: opacity 0.5s linear;
 `;
 
 const InputFlagBox = styled.div`
@@ -191,6 +194,11 @@ const InputFlagBox = styled.div`
 	align-items: center;
 	border-radius: 5px;
 	font-weight: bold;
+	width: 100%;
+	max-width: 200px;
+	visibility: ${props => (props.display === 'true' ? 'visibility' : 'hidden')};
+	opacity: ${props => (props.display === 'true' ? 1 : 0)};
+	transition: opacity 0.5s linear;
 `;
 
 const FlagIcon = styled.i`
@@ -204,7 +212,7 @@ const InputFlag = styled.input`
 
 const UploadButton = styled.button`
 	all: unset;
-	margin-top: 20px;
+	margin: 15px 0;
 	font-weight: bold;
 	color: #fff;
 	cursor: pointer;
@@ -213,7 +221,7 @@ const UploadButton = styled.button`
 	border-radius: 5px;
 	visibility: ${props => (props.display === 'true' ? 'visibility' : 'hidden')};
 	opacity: ${props => (props.display === 'true' ? 1 : 0)};
-	transition: opacity 1s linear;
+	transition: opacity 0.5s linear;
 `;
 
 const mapStateToProps = state => ({

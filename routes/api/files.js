@@ -1,9 +1,10 @@
 const express = require('express');
-const router = express.Router();
 const auth = require('../../middleware/auth');
 const formidable = require('formidable');
 const AWS = require('aws-sdk');
 const fs = require('fs');
+
+const router = express.Router();
 
 // 스키마
 const File = require('../../models/File');

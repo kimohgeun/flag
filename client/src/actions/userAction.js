@@ -8,7 +8,7 @@ export const LOAD_SUCCESS = 'user/LOAD_SUCCESS';
 export const AUTH_FAIL = 'user/AUTH_FAIL';
 export const DELETE_SUCCESS = 'user/DELETE_SUCCESS';
 
-// 회원가입
+// REGISTER
 export const register = (username, password) => dispatch => {
 	// Headers
 	const config = {
@@ -32,7 +32,7 @@ export const register = (username, password) => dispatch => {
 		.catch(err => dispatch(getError(err.response.data.err, 'REGISTER_FAIL')));
 };
 
-// 로그인
+// LOGIN
 export const login = (username, password) => dispatch => {
 	// Headers
 	const config = {
@@ -57,14 +57,14 @@ export const login = (username, password) => dispatch => {
 		.catch(err => dispatch(getError(err.response.data.err, 'LOGIN_FAIL')));
 };
 
-// 로그아웃
+// LOGOUT
 export const logout = () => {
 	return {
 		type: LOGOUT,
 	};
 };
 
-// 로드 유저
+// LOAD USER
 export const loadUser = () => (dispatch, getState) => {
 	const token = getState().userReducer.token;
 	// 토큰 없음
@@ -98,7 +98,7 @@ export const loadUser = () => (dispatch, getState) => {
 	}
 };
 
-// 회원 탈퇴
+// DELETE
 export const deleteUser = password => (dispatch, getState) => {
 	// 토큰
 	const token = getState().userReducer.token;
