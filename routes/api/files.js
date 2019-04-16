@@ -103,7 +103,7 @@ router.get('/download/:username/:flagname', (req, res) => {
 			});
 			const filePath = findFile[0].path;
 			const fileName = findFile[0].filename;
-			const mimetype = mime.lookup(filePath);
+			const mimetype = mime.getType(filePath);
 			// 헤더 세팅
 			res.setHeader('fileName', encodeURIComponent(fileName));
 			res.setHeader('Content-type', mimetype);
