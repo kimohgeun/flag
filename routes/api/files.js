@@ -47,7 +47,7 @@ router.post('/upload', auth, (req, res) => {
 						s3.upload(params, err => {
 							if (err) {
 								// return res.status(400).json({ err: '업로드 실패' });
-								return console.log(err)
+								return console.log(err);
 							} else {
 								// DB 저장
 								File.update({ uploader: username }, { $push: { files: addFile } }).then(() =>
@@ -107,6 +107,7 @@ router.get('/download/:username/:flagname', (req, res) => {
 			// 헤더 세팅
 			res.setHeader('fileName', encodeURIComponent(fileName));
 			res.setHeader('Content-type', mimetype);
+			res.setHeader('Content-Disposition', 'attachment; filename=' + encodeURIComponent(fileName));
 			// aws s3 파일
 			const params = { Bucket: 'flag-kog', Key: `${username}/${fileName}` };
 			s3.getObject(params)
