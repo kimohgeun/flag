@@ -9,34 +9,42 @@ class DownloadContainer extends Component {
 		err: false,
 	};
 
-	componentDidMount() {
-		const { username, flagname } = this.props.match.params;
-		axios({
-			url: `/api/files/download/${username}/${flagname}`,
-			method: 'GET',
-			responseType: 'blob',
-		})
-			.then(res => {
-				const filename = decodeURIComponent(res.headers.filename);
-				this.setState({
-					filename,
-				});
-				// 다운로드
-				const url = window.URL.createObjectURL(new Blob([res.data]));
-				const link = document.createElement('a');
-				link.href = url;
-				link.setAttribute('download', filename);
-				document.body.appendChild(link);
-				link.click();
-				this.setState({
-					downloading: true,
-				});
+	confirm = () => {
+		if (window.confirm('진짜 ?')) {
+			const { username, flagname } = this.props.match.params;
+			return axios({
+				url: `/api/files/download/${username}/${flagname}`,
+				method: 'GET',
+				responseType: 'blob',
 			})
-			.catch(() =>
-				this.setState({
-					err: true,
+				.then(res => {
+					const filename = decodeURIComponent(res.headers.filename);
+					this.setState({
+						filename,
+					});
+					// 다운로드
+					const url = window.URL.createObjectURL(new Blob([res.data]));
+					const link = document.createElement('a');
+					link.href = url;
+					link.setAttribute('download', filename);
+					document.body.appendChild(link);
+					link.click();
+					this.setState({
+						downloading: true,
+					});
 				})
-			);
+				.catch(() =>
+					this.setState({
+						err: true,
+					})
+				);
+		} else {
+			return;
+		}
+	};
+
+	componentDidMount() {
+		this.confirm();
 	}
 
 	render() {
