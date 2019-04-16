@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('../../middleware/auth');
-const mime = require('mime');
 const formidable = require('formidable');
 const AWS = require('aws-sdk');
+const fs = require('fs');
 
 // 스키마
 const File = require('../../models/File');
@@ -30,11 +30,11 @@ router.post('/upload', auth, (req, res) => {
 					}).then(file => {
 						// 플래그 중복
 						if (file !== null) return res.status(400).json({ err: '플래그 중복' });
+						const encodeName = encodeURIComponent(`${userfile.name}`);
 						// 객체 생성
 						const addFile = {
-							uploader: username,
-							filename: userfile.name,
-							path: `https://s3.ap-northeast-2.amazonaws.com/flag-kog/${username}/${userfile.name}`,
+							name: userfile.name,
+							path: `https://s3.ap-northeast-2.amazonaws.com/flag-kog/${username}/${encodeName}`,
 							flag: flagname,
 						};
 						// 파일 저장
@@ -42,17 +42,18 @@ router.post('/upload', auth, (req, res) => {
 							Bucket: 'flag-kog',
 							Key: `${username}/${userfile.name}`,
 							ACL: 'public-read',
-							Body: require('fs').createReadStream(userfile.path),
+							Body: fs.createReadStream(userfile.path),
 						};
 						s3.upload(params, err => {
 							if (err) {
-								// return res.status(400).json({ err: '업로드 실패' });
-								return console.log(err);
+								return res.status(400).json({ err: '업로드 실패' });
 							} else {
 								// DB 저장
-								File.update({ uploader: username }, { $push: { files: addFile } }).then(() =>
-									res.json(addFile)
-								);
+								File.update({ uploader: username }, { $push: { files: addFile } }).then(() => {
+									File.findOne({ uploader: username }).then(file => {
+										res.json(file);
+									});
+								});
 							}
 						});
 					});
@@ -98,21 +99,15 @@ router.get('/download/:username/:flagname', (req, res) => {
 		.then(file => {
 			// 유저네임 혹은 플래그 불일치
 			if (file === null) return res.status(400).send();
-			const findFile = file.files.filter(file => {
+			const downFile = file.files.filter(file => {
 				return file.flag === flagname;
 			});
-			const filePath = findFile[0].path;
-			const fileName = findFile[0].filename;
-			const mimetype = mime.getType(filePath);
-			// 헤더 세팅
-			res.setHeader('fileName', encodeURIComponent(fileName));
-			res.setHeader('Content-type', mimetype);
-			res.setHeader('Content-Disposition', 'attachment; filename=' + encodeURIComponent(fileName));
-			// aws s3 파일
-			const params = { Bucket: 'flag-kog', Key: `${username}/${fileName}` };
-			s3.getObject(params)
-				.createReadStream()
-				.pipe(res);
+			const fileName = downFile[0].name;
+			const filePath = downFile[0].path;
+			res.json({
+				fileName: fileName,
+				filePath: filePath,
+			});
 		})
 		.catch(err => res.status(400).json(err));
 });

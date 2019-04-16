@@ -8,7 +8,7 @@ const FileSchema = new Schema({
 	},
 	files: [
 		{
-			filename: {
+			name: {
 				type: String,
 				required: true,
 			},

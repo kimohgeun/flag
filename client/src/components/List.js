@@ -85,7 +85,7 @@ class List extends Component {
 									<Col span={8} key={file._id}>
 										<Card>
 											<FlagIcon className="fas fa-flag"> {file.flag}</FlagIcon>
-											<FileName>파일 : {file.filename}</FileName>
+											<FileName>파일 : {file.name}</FileName>
 											<ButtonBox>
 												<ClipboardButton
 													className="fas fa-clipboard"

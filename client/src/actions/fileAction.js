@@ -47,7 +47,7 @@ export const upload = formData => (dispatch, getState) => {
 			// 업로드 성공
 			dispatch({
 				type: UPLOAD_SUCCESS,
-				payload: res.data,
+				payload: res.data.files,
 			});
 		})
 		// 업로드 실패

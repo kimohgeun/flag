@@ -9,42 +9,29 @@ class DownloadContainer extends Component {
 		err: false,
 	};
 
-	confirm = () => {
-		if (window.confirm('진짜 ?')) {
-			const { username, flagname } = this.props.match.params;
-			return axios({
-				url: `/api/files/download/${username}/${flagname}`,
-				method: 'GET',
-				responseType: 'blob',
-			})
-				.then(res => {
-					const filename = decodeURIComponent(res.headers.filename);
-					this.setState({
-						filename,
-					});
-					// 다운로드
-					const url = window.URL.createObjectURL(new Blob([res.data]));
-					const link = document.createElement('a');
-					link.href = url;
-					link.setAttribute('download', filename);
-					document.body.appendChild(link);
-					link.click();
-					this.setState({
-						downloading: true,
-					});
-				})
-				.catch(() =>
-					this.setState({
-						err: true,
-					})
-				);
-		} else {
-			return;
-		}
-	};
-
 	componentDidMount() {
-		this.confirm();
+		const { username, flagname } = this.props.match.params;
+		axios({
+			url: `/api/files/download/${username}/${flagname}`,
+			method: 'GET',
+		})
+			.then(res => {
+				const filename = res.data.fileName;
+				const filepath = res.data.filePath;
+				this.setState({
+					filename: filename,
+					downloading: true,
+				});
+				const link = document.createElement('a');
+				link.href = filepath;
+				link.download = filename;
+				link.click();
+			})
+			.catch(() =>
+				this.setState({
+					err: true,
+				})
+			);
 	}
 
 	render() {

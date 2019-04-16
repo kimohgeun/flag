@@ -25,7 +25,7 @@ export default function(state = initialState, action) {
 		case UPLOAD_SUCCESS:
 			return {
 				...state,
-				fileList: state.fileList.concat(action.payload),
+				fileList: action.payload,
 				uploaded: true,
 			};
 		case DELETE_SUCESS:
