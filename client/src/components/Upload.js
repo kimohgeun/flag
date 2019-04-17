@@ -114,7 +114,7 @@ class Upload extends Component {
 					<FileName id="file_name" display={file !== null ? 'true' : 'false'} readOnly />
 					<InputFlagBox display={file !== null ? 'true' : 'false'}>
 						<FlagIcon className="fas fa-flag" />
-						{`https://flag1.tk/${username}/`}
+						{`flag1.tk/${username}/`}
 						<InputFlag type="text" value={flag} onChange={this.onChange} />
 					</InputFlagBox>
 					<UploadButton display={flag !== '' && file !== null ? 'true' : 'false'}>업로드</UploadButton>
@@ -195,8 +195,8 @@ const InputFlagBox = styled.div`
 	border-radius: 5px;
 	font-weight: bold;
 	width: 100%;
-	max-width: 500px;
-	@media (max-width: 499) {
+	max-width: 350px;
+	@media (max-width: 349) {
 		width: 100%;
 	}
 `;
