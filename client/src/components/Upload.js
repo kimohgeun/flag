@@ -98,6 +98,7 @@ class Upload extends Component {
 
 	render() {
 		const { flag, uploading, file } = this.state;
+		const { username } = this.props;
 		return (
 			<Container>
 				<Form onSubmit={this.onSubmit}>
@@ -113,11 +114,10 @@ class Upload extends Component {
 					<FileName id="file_name" display={file !== null ? 'true' : 'false'} readOnly />
 					<InputFlagBox display={file !== null ? 'true' : 'false'}>
 						<FlagIcon className="fas fa-flag" />
+						{`https://flag1.tk/${username}/`}
 						<InputFlag type="text" value={flag} onChange={this.onChange} />
 					</InputFlagBox>
-					<UploadButton display={flag !== '' && file !== null ? 'true' : 'false'}>
-						업로드
-					</UploadButton>
+					<UploadButton display={flag !== '' && file !== null ? 'true' : 'false'}>업로드</UploadButton>
 				</Form>
 			</Container>
 		);
@@ -195,10 +195,10 @@ const InputFlagBox = styled.div`
 	border-radius: 5px;
 	font-weight: bold;
 	width: 100%;
-	max-width: 200px;
-	visibility: ${props => (props.display === 'true' ? 'visibility' : 'hidden')};
-	opacity: ${props => (props.display === 'true' ? 1 : 0)};
-	transition: opacity 0.5s linear;
+	max-width: 500px;
+	@media (max-width: 499) {
+		width: 100%;
+	}
 `;
 
 const FlagIcon = styled.i`
