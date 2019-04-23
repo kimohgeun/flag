@@ -28,6 +28,6 @@ Redux
 
 ## 배포
 
-[Heroku](flag1.herokuapp.com)
+[Heroku](http://flag1.herokuapp.com)
 
-[AWS](flag1.tk)
+[AWS](http://flag1.tk)
