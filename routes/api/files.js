@@ -20,7 +20,7 @@ router.post('/upload', auth, (req, res) => {
 		if (err) throw err;
 		const { username, flagname } = fields;
 		const { userfile } = files;
-		File.findOne({ $and: [{ uploader: username }, { files: { $elemMatch: { filename: userfile.name } } }] }).then(
+		File.findOne({ $and: [{ uploader: username }, { files: { $elemMatch: { name: userfile.name } } }] }).then(
 			file => {
 				// 파일 중복
 				if (file !== null) {

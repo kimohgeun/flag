@@ -1,9 +1,0 @@
-{
-	"mongoURI": "mongodb://kog:qwe123@ds125616.mlab.com:25616/flag",
-	"jwtSecret": "flag-jwtSecret",
-	"awsS3": {
-		"accessKeyId": "AKIA2QTLLPUNUTGQGRVF",
-		"secretAccessKey": "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",
-		"region": "ap-northeast-2"
-	}
-}
